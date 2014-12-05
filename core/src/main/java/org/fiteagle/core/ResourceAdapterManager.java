@@ -40,10 +40,10 @@ private static ResourceAdapterManager manager=null;
   private ResourceAdapterDatabase adapterDatabase;
   private ScheduledExecutorService executor;
   private HashMap<String, ScheduledFuture<?>> expirationMap;
-private URLClassLoader sysloader;
+private ClassLoader sysloader;
   private ResourceAdapterManager() {
     if (manager!=null) return;
-    sysloader = (URLClassLoader) this.getClass().getClassLoader();
+    sysloader =  this.getClass().getClassLoader();
     adapterInstancesDatabase = new InMemoryResourceAdapterDatabase();
     adapterDatabase = new InMemoryResourceAdapterDatabase();
     executor = Executors.newScheduledThreadPool(2);
@@ -55,7 +55,7 @@ private URLClassLoader sysloader;
     	File directory = new File(directoryName);
 		allClassesInPackage = findClassesInDirectory(directory, packageName);
 	} catch (ClassNotFoundException | IOException e) {
-		throw new RuntimeException();//TODO: give more information in exception
+		throw new RuntimeException(e);//TODO: give more information in exception
 	} catch (NoSuchMethodException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -188,7 +188,7 @@ private URLClassLoader sysloader;
 	private  List<Class> findClassesInJar(File jarFile) throws ClassNotFoundException, IOException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		
 		List<Class> classes = new ArrayList<Class>();
-		addURLToSystemClassLoader(jarFile.toURI().toURL());
+		//addURLToSystemClassLoader(jarFile.toURI().toURL());
 
 //		JarFile jar = new JarFile(jarFile);
 //		Enumeration<JarEntry> jarEntries = jar.entries();

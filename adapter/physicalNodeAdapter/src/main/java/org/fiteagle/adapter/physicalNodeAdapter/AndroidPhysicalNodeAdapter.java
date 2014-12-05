@@ -1,9 +1,12 @@
 package org.fiteagle.adapter.physicalNodeAdapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.fiteagle.adapter.common.AdapterConfiguration;
 import org.fiteagle.adapter.common.AdapterUser;
+import org.fiteagle.adapter.common.ResourceAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,6 +81,11 @@ public class AndroidPhysicalNodeAdapter extends PhysicalNodeAdapter{
 			androidConnector.disconnect();
 		}
 
+	}
+
+	public static List<ResourceAdapter> getJavaInstances() {
+
+		return new ArrayList<ResourceAdapter>();
 	}
 
 }
