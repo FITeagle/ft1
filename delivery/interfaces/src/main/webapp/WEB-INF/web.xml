@@ -35,6 +35,24 @@
     <url-pattern>/gui/*</url-pattern>
   </servlet-mapping>
   
-
+  <filter>
+    <filter-name>guiceFilter</filter-name>
+    <filter-class>com.google.inject.servlet.GuiceFilter</filter-class>
+  </filter>
+  
+  <filter-mapping>
+    <filter-name>guiceFilter</filter-name>
+    <url-pattern>/api/v1/*</url-pattern>
+  </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>guiceFilter</filter-name>
+    <url-pattern>/api/fed4fire/*</url-pattern>
+  </filter-mapping>
+  
+  <listener>
+   <listener-class>org.fiteagle.delivery.rest.fiteagle.ServletConfig</listener-class>
+  </listener>
+  
 </web-app>
 
