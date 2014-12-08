@@ -21,7 +21,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.aaa.KeyManagement.CouldNotParse;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateEmailException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicatePublicKeyException;
@@ -32,10 +31,10 @@ import org.fiteagle.core.userdatabase.User.PublicKeyNotFoundException;
 import org.fiteagle.core.userdatabase.User.Role;
 import org.fiteagle.core.userdatabase.UserPublicKey;
 import org.fiteagle.interactors.api.UserManagerBoundary;
+import org.fiteagle.interactors.usermanagement.UserManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
 import com.sun.jersey.core.spi.factory.ResponseBuilderImpl;
 
 @Path("v1/user")
@@ -45,9 +44,8 @@ public class UserPresenter{
   
   private final UserManagerBoundary manager;
   
-  @Inject
-  public UserPresenter(final UserManagerBoundary manager){
-    this.manager = manager;
+  public UserPresenter(){
+    this.manager = UserManager.getInstance();
   }
   
   @GET
@@ -58,9 +56,6 @@ public class UserPresenter{
       return manager.get(username);
     } catch (UserNotFoundException e) {
       throw new FiteagleWebApplicationException(404, e.getMessage());
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }   
   }
   
@@ -77,9 +72,6 @@ public class UserPresenter{
       throw new FiteagleWebApplicationException(409, e.getMessage());
     } catch (DuplicatePublicKeyException e){
       throw new FiteagleWebApplicationException(409, e.getMessage());
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     } catch (User.NotEnoughAttributesException | User.InValidAttributeException e) {
       throw new FiteagleWebApplicationException(422, e.getMessage());
     }
@@ -93,9 +85,6 @@ public class UserPresenter{
     try {
       List<UserPublicKey> publicKeys = createPublicKeys(user.getPublicKeys());  
       manager.update(username, user.getFirstName(), user.getLastName(), user.getEmail(), user.getAffiliation(), user.getPassword(), publicKeys);
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);  
     } catch (UserNotFoundException e) {
       throw new FiteagleWebApplicationException(404, e.getMessage());
     } catch (DuplicateEmailException e) {
@@ -113,9 +102,6 @@ public class UserPresenter{
   public Response setRole(@PathParam("username") String username, @PathParam("role") Role role) {
     try {
       manager.setRole(username, role);
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);  
     } catch (UserNotFoundException e) {
       throw new FiteagleWebApplicationException(404, e.getMessage());
     }
@@ -134,7 +120,7 @@ public class UserPresenter{
       throw new FiteagleWebApplicationException(404, e.getMessage());
     } catch (DuplicatePublicKeyException e){
       throw new FiteagleWebApplicationException(409, e.getMessage());
-    } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException | DatabaseException e) {
+    } catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
       log.error(e.getMessage());
       throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);    
     }
@@ -150,9 +136,6 @@ public class UserPresenter{
       throw new FiteagleWebApplicationException(422, e.getMessage());
     } catch (UserNotFoundException e) {
       throw new FiteagleWebApplicationException(404, e.getMessage());
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     return Response.status(200).build();
   }
@@ -169,9 +152,6 @@ public class UserPresenter{
       throw new FiteagleWebApplicationException(409, e.getMessage());
     } catch (UserNotFoundException | PublicKeyNotFoundException e) {
       throw new FiteagleWebApplicationException(404, e.getMessage());
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
     }
     return Response.status(200).build();
   }
@@ -179,12 +159,7 @@ public class UserPresenter{
   @DELETE
   @Path("{username}")
   public Response deleteUser(@PathParam("username") String username) {
-    try {
-      manager.delete(username);
-    } catch (DatabaseException e) {
-      log.error(e.getMessage());
-      throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-    }
+	manager.delete(username);
     return Response.status(200).build();
   }
   

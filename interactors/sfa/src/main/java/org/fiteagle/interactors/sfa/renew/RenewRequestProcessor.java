@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.persistence.jpa.jpql.parser.ResultVariable;
 import org.fiteagle.adapter.common.NodeAdapterInterface;
 import org.fiteagle.adapter.common.OpenstackResourceAdapter;
 import org.fiteagle.adapter.common.ResourceAdapter;

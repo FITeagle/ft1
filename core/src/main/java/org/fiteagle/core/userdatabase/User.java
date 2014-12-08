@@ -23,7 +23,7 @@ import javax.persistence.UniqueConstraint;
 
 import net.iharder.Base64;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicatePublicKeyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.fiteagle.core.aaa.KeyManagement;
 
 
@@ -37,7 +37,6 @@ public class UserPublicKey implements Serializable{
   private String description;
   
   @JsonIgnore
-  @Id
   @JoinColumn(name="owner_username")
   @ManyToOne
   private User owner;

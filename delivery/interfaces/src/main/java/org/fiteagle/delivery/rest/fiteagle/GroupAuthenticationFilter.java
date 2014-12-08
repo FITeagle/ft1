@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
 import org.fiteagle.core.userdatabase.JPAUserDB.UserNotFoundException;
@@ -75,7 +74,7 @@ public class GroupAuthenticationFilter extends AuthenticationFilter {
         response.sendError(Response.Status.UNAUTHORIZED.getStatusCode());
         return false;
       }
-    } catch (NoSuchAlgorithmException | IOException | DatabaseException e) {
+    } catch (NoSuchAlgorithmException | IOException e) {
       log.error(e.getMessage());
       response.sendError(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
       return false;

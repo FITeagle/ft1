@@ -1,7 +1,6 @@
 package org.fiteagle.delivery.rest.fiteagle;
 
 import org.fiteagle.core.groupmanagement.Group;
-import org.fiteagle.interactors.groupmanagement.GroupManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +10,7 @@ public class GroupPresenterTest {
   Group g;
   @Before
   public void setUp() throws Exception {
-     pre = new GroupPresenter(new GroupManager());
+     pre = new GroupPresenter();
      g = new Group("slice", "owner");
   }
   

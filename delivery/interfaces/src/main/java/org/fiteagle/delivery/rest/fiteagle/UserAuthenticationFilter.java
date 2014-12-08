@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response;
 
 import net.iharder.Base64;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.config.InterfaceConfiguration;
 import org.fiteagle.core.userdatabase.JPAUserDB.UserNotFoundException;
 import org.fiteagle.interactors.usermanagement.UserManager;
@@ -146,7 +145,7 @@ public class UserAuthenticationFilter extends AuthenticationFilter{
       if (!UserManager.getInstance().verifyCredentials(subjectUsername, credentials[1])) {
         return false;
       }
-    } catch (NoSuchAlgorithmException | IOException | DatabaseException e) {
+    } catch (NoSuchAlgorithmException | IOException e) {
       log.error(e.getMessage());
       return false;
     } catch (UserNotFoundException e) {

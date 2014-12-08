@@ -4,35 +4,30 @@ package org.fiteagle.core.userdatabase;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.fiteagle.core.config.FiteaglePreferences;
-import org.fiteagle.core.config.FiteaglePreferencesXML;
 import org.fiteagle.core.userdatabase.User.Role;
 
 public class JPAUserDB{
   
-  private EntityManagerFactory factory;
-  private final String PERSISTENCE_TYPE;  
+  private EntityManager manager;
   
-  private static final String DEFAULT_DATABASE_PATH = System.getProperty("user.home")+"/.fiteagle/db/";
-  private static FiteaglePreferences preferences = new FiteaglePreferencesXML(JPAUserDB.class);
-  
-  private static final String PERSISTENCE_UNIT_NAME_DERBY = "Users_Derby";
+  private static final String PERSISTENCE_UNIT_NAME_HIBERNATE = "Users_Hibernate";
   private static final String PERSISTENCE_UNIT_NAME_INMEMORY = "Users_InMemory";
   
   private static JPAUserDB derbyInstance;
   private static JPAUserDB inMemoryInstance;
   
-  private JPAUserDB(String persistenceUnitName) {
-    PERSISTENCE_TYPE = persistenceUnitName;
+  public JPAUserDB(){
+	  derbyInstance = this;
   }
   
-  static{
-    System.setProperty("derby.system.home", getDatabasePath());
+  private JPAUserDB(String persistenceUnitName) {
   }
   
   public static JPAUserDB getInMemoryInstance(){
@@ -42,34 +37,32 @@ public class JPAUserDB{
     return inMemoryInstance;
   }
   
-  public static JPAUserDB getDerbyInstance(){
+  public static JPAUserDB getHibernateInstance(){
     if(derbyInstance == null){
-      derbyInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_DERBY);
+      derbyInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_HIBERNATE);
     }
     return derbyInstance;
   }
   
-  private static String getDatabasePath() {
-    if(preferences.get("databasePath") == null){
-      preferences.put("databasePath", DEFAULT_DATABASE_PATH);
-    }
-    return preferences.get("databasePath");
-  }
-  
-  
   private synchronized EntityManager getEntityManager() {
-    if (factory == null){
-      factory = Persistence.createEntityManagerFactory(PERSISTENCE_TYPE);
-    }
-    return factory.createEntityManager();
+	  if(manager == null){
+    		try {
+				Context context = new InitialContext();
+				EntityManagerFactory f = (EntityManagerFactory) context.lookup("java:/fiteagle1/users/entitymanagerFactory");
+				manager = f.createEntityManager();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	}
+    return manager;
   }
   
   public void add(User user){
     EntityManager em = getEntityManager();
     try{
-      em.getTransaction().begin();
       em.persist(user);
-      em.getTransaction().commit();
     } catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
         throw new DuplicateEmailException();
@@ -78,8 +71,6 @@ public class JPAUserDB{
         throw new DuplicateUsernameException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
   
@@ -89,26 +80,16 @@ public class JPAUserDB{
   
   public User get(String username) throws UserNotFoundException{
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
       return user;
-    }finally{
-      em.close();
-    }
   }
   
   public void delete(User user){
     EntityManager em = getEntityManager();
-    try{
-      em.getTransaction().begin();
       em.remove(em.merge(user));
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
   }
   
   public void delete(String username){
@@ -122,32 +103,22 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
       user.updateAttributes(firstName, lastName, email, affiliation, password, publicKeys);
-      em.getTransaction().commit();
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
         throw new DuplicateEmailException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
 
   public void setRole(String username, Role role) {
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
       user.setRole(role);
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
   }
 
   
@@ -158,32 +129,22 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
       user.addPublicKey(publicKey);
-      em.getTransaction().commit();
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
   
   public void deleteKey(String username, String description){
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
       user.deletePublicKey(description);
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
   }
   
   public void renameKey(String username, String description, String newDescription){
@@ -193,28 +154,21 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
       user.renamePublicKey(description, newDescription);
-      em.getTransaction().commit();
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
   
   public List<User> getAllUsers(){
     EntityManager em = getEntityManager();
-    try{
       Query query = em.createQuery("SELECT u FROM User u");
+      @SuppressWarnings("unchecked")
       List<User> resultList = (List<User>) query.getResultList();
       return resultList;
-    }finally{
-      em.close();
-    }
   }
   
   public static class UserNotFoundException extends RuntimeException {    

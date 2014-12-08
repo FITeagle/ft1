@@ -12,7 +12,6 @@ import java.util.List;
 
 import net.iharder.Base64;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.aaa.CertificateAuthority;
 import org.fiteagle.core.aaa.KeyManagement;
 import org.fiteagle.core.aaa.x509.X509Util;
@@ -65,7 +64,7 @@ public class UserDBManager {
 			preferences.put("databaseType", DEFAULT_DATABASE_TYPE.name());
 		}
 		if (preferences.get("databaseType").equals(databaseType.Persistent.name())) {
-		  database = JPAUserDB.getDerbyInstance();
+		  database = JPAUserDB.getHibernateInstance();
 		} else {
 			database = JPAUserDB.getInMemoryInstance();
 		}
@@ -103,7 +102,7 @@ public class UserDBManager {
 	}
 	
   public void add(User u) throws DuplicateUsernameException,
-			DuplicateEmailException, DatabaseException,
+			DuplicateEmailException,
 			User.NotEnoughAttributesException, User.InValidAttributeException,
 			DuplicatePublicKeyException {
 		String username = addDomain(u.getUsername());
@@ -111,19 +110,19 @@ public class UserDBManager {
 		database.add(u);
 	}
 
-	public void delete(String username) throws DatabaseException {
+	public void delete(String username) {
 		username = addDomain(username);
 		database.delete(username);
 	}
 
-	public void delete(User u) throws DatabaseException {
+	public void delete(User u)  {
 		String username = addDomain(u.getUsername());
 		u.setUsername(username);
 		database.delete(u);
 	}
 
 	public void update(String username, String firstName, String lastName, String email, String affiliation, String password, List<UserPublicKey> publicKeys) throws UserNotFoundException,
-			DuplicateEmailException, DatabaseException,
+			DuplicateEmailException,
 			User.NotEnoughAttributesException, User.InValidAttributeException,
 			DuplicatePublicKeyException {
 		username = addDomain(username);
@@ -135,33 +134,31 @@ public class UserDBManager {
 	}
 	
 	public void addKey(String username, UserPublicKey key)
-			throws UserNotFoundException, DatabaseException,
+			throws UserNotFoundException,
 			User.InValidAttributeException, DuplicatePublicKeyException {
 		username = addDomain(username);
 		database.addKey(username, key);
 	}
 
 	public void deleteKey(String username, String description)
-			throws UserNotFoundException, DatabaseException {
+			throws UserNotFoundException {
 		username = addDomain(username);
 		database.deleteKey(username, description);
 	}
 
 	public void renameKey(String username, String description,
-			String newDescription) throws UserNotFoundException,
-			DatabaseException, DuplicatePublicKeyException,
+			String newDescription) throws UserNotFoundException, DuplicatePublicKeyException,
 			User.InValidAttributeException, PublicKeyNotFoundException {
 		username = addDomain(username);
 		database.renameKey(username, description, newDescription);
 	}
 
-	public User get(String username) throws UserNotFoundException,
-			DatabaseException {
+	public User get(String username) throws UserNotFoundException {
 		username = addDomain(username);
 		return database.get(username);
 	}
 
-	public User get(User u) throws UserNotFoundException, DatabaseException {
+	public User get(User u) throws UserNotFoundException {
 		String username = addDomain(u.getUsername());
 		u.setUsername(username);
 		return database.get(u);
@@ -189,7 +186,7 @@ public class UserDBManager {
 
 	public boolean verifyCredentials(String username, String password)
 			throws NoSuchAlgorithmException, IOException,
-			UserNotFoundException, DatabaseException {
+			UserNotFoundException {
 		username = addDomain(username);
 		User User = get(username);
 		return verifyPassword(password, User.getPasswordHash(), User.getPasswordSalt());

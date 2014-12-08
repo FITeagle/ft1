@@ -1,10 +1,6 @@
 package org.fiteagle.delivery.rest.fiteagle;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -15,18 +11,16 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.fiteagle.interactors.api.ResourceMonitoringBoundary;
+import org.fiteagle.interactors.monitoring.MonitoringManager;
 import orgt.fiteagle.core.monitoring.StatusTable;
-
-import com.google.inject.Inject;
 
 @Path("/v1/status")
 public class StatusPresenter {
 
 	private ResourceMonitoringBoundary monitor;
 
-	@Inject
-	public StatusPresenter(final ResourceMonitoringBoundary monitor) {
-		this.monitor = monitor;
+	public StatusPresenter() {
+		this.monitor = new MonitoringManager();
 	}
 
 	@GET

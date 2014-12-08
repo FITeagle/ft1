@@ -1,17 +1,14 @@
 package org.fiteagle.delivery.rest.fiteagle;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import org.fiteagle.interactors.api.ConfigurationManagerBoundary;
 import org.fiteagle.interactors.api.ResourceMonitoringBoundary;
+import org.fiteagle.interactors.monitoring.MonitoringManager;
 import orgt.fiteagle.core.monitoring.StatusTable;
-
-import com.google.inject.Inject;
 
 @Path("/v1/monitoring")
 public class ResourceMonitoringPresenter {
@@ -51,10 +48,9 @@ public class ResourceMonitoringPresenter {
 			"</html>\n";
 	private ResourceMonitoringBoundary monitor;
 	
-	@Inject
-	  public ResourceMonitoringPresenter(final ResourceMonitoringBoundary monitor) {
-	    this.monitor = monitor;
-	  }
+	public ResourceMonitoringPresenter() {
+		this.monitor = new MonitoringManager();
+	}
 
 	@GET
 	@Path("/data")

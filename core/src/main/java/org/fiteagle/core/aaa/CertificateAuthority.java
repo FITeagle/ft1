@@ -29,7 +29,6 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.config.InterfaceConfiguration;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.userdatabase.User;
@@ -48,11 +47,7 @@ public class CertificateAuthority {
 	}
 
 	private CertificateAuthority() {
-		try {
-			userDBManager = UserDBManager.getInstance();
-		} catch (DatabaseException e) {
-			throw e;
-		}
+		userDBManager = UserDBManager.getInstance();
 	}
 
 	private KeyStoreManagement keyStoreManagement = KeyStoreManagement

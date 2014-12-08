@@ -6,17 +6,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.fiteagle.interactors.api.ConfigurationManagerBoundary;
-
-import com.google.inject.Inject;
+import org.fiteagle.interactors.configuration.ConfigurationManager;
 
 @Path("v1/config")
 public class ConfigurationController {
   
   private final ConfigurationManagerBoundary interactor;
   
-  @Inject
-  public ConfigurationController(final ConfigurationManagerBoundary interactor) {
-    this.interactor = interactor;
+  public ConfigurationController() {
+    this.interactor = new ConfigurationManager();
   }
   
   @GET

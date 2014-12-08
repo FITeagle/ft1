@@ -14,15 +14,13 @@ import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.SQLiteGroupDatabase.CouldNotCreateGroup;
 import org.fiteagle.core.groupmanagement.SQLiteGroupDatabase.CouldNotDeleteGroup;
 import org.fiteagle.interactors.api.GroupManagerBoundary;
-
-import com.google.inject.Inject;
+import org.fiteagle.interactors.groupmanagement.GroupManager;
 @Path("/v1/group")
 public class GroupPresenter {
   GroupManagerBoundary groupManagerBoundary;
   
-  @Inject
-  public GroupPresenter(final GroupManagerBoundary groupManagerBoundary){
-    this.groupManagerBoundary = groupManagerBoundary ;
+  public GroupPresenter(){
+    this.groupManagerBoundary = new GroupManager();
   }
 
   

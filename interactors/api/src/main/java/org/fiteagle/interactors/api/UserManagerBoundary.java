@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateEmailException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicatePublicKeyException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateUsernameException;
@@ -17,28 +16,28 @@ import org.fiteagle.core.userdatabase.UserPublicKey;
 
 public interface UserManagerBoundary {
   
-  public abstract void add(User u) throws DuplicateUsernameException, DuplicateEmailException, DatabaseException, User.NotEnoughAttributesException,
+  public abstract void add(User u) throws DuplicateUsernameException, DuplicateEmailException, User.NotEnoughAttributesException,
       User.InValidAttributeException, DuplicatePublicKeyException;
   
-  public abstract void delete(String username) throws DatabaseException;
+  public abstract void delete(String username) ;
   
-  public abstract void delete(User u) throws DatabaseException;
+  public abstract void delete(User u) ;
   
-  public abstract void update(String username, String firstName, String lastName, String email, String affiliation, String password, List<UserPublicKey> publicKeys) throws UserNotFoundException, DuplicateEmailException, DatabaseException, User.NotEnoughAttributesException,
+  public abstract void update(String username, String firstName, String lastName, String email, String affiliation, String password, List<UserPublicKey> publicKeys) throws UserNotFoundException, DuplicateEmailException, User.NotEnoughAttributesException,
       User.InValidAttributeException, DuplicatePublicKeyException;
   
   public abstract void setRole(String username, Role role);
   
-  public abstract void addKey(String username, UserPublicKey key) throws UserNotFoundException, DatabaseException,
+  public abstract void addKey(String username, UserPublicKey key) throws UserNotFoundException,
       User.InValidAttributeException, DuplicatePublicKeyException;
   
-  public abstract void deleteKey(String username, String description) throws UserNotFoundException, DatabaseException;
+  public abstract void deleteKey(String username, String description) throws UserNotFoundException;
   
-  public void renameKey(String username, String description, String newDescription) throws UserNotFoundException, DatabaseException, DuplicatePublicKeyException, User.InValidAttributeException, PublicKeyNotFoundException;
+  public void renameKey(String username, String description, String newDescription) throws UserNotFoundException, DuplicatePublicKeyException, User.InValidAttributeException, PublicKeyNotFoundException;
   
-  public abstract User get(String username) throws UserNotFoundException, DatabaseException;
+  public abstract User get(String username) throws UserNotFoundException;
   
-  public abstract User get(User u) throws UserNotFoundException, DatabaseException;
+  public abstract User get(User u) throws UserNotFoundException;
   
   public abstract User getUserFromCert(X509Certificate userCert);
   
@@ -46,7 +45,7 @@ public interface UserManagerBoundary {
       NoSuchAlgorithmException;
   
   public abstract boolean verifyCredentials(String username, String password) throws NoSuchAlgorithmException,
-      IOException, UserNotFoundException, DatabaseException;
+      IOException, UserNotFoundException;
   
   public abstract String createUserKeyPairAndCertificate(String username, String passphrase) throws Exception;
   
