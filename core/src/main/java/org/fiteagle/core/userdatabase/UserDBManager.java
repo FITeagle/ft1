@@ -56,7 +56,7 @@ public class UserDBManager {
 	  
 	  Boolean inTestingMode = Boolean.valueOf(System.getProperty("org.fiteagle.core.userdatabase.UserDBManager.testing"));
 	  if(inTestingMode){
-	    database = JPAUserDB.getInMemoryInstance();
+	    database = new InMemoryJPAUserDB();
 	    return;
 	  }
 	  
@@ -64,9 +64,9 @@ public class UserDBManager {
 			preferences.put("databaseType", DEFAULT_DATABASE_TYPE.name());
 		}
 		if (preferences.get("databaseType").equals(databaseType.Persistent.name())) {
-		  database = JPAUserDB.getHibernateInstance();
+		  database = JPAUserDB.getInstance();
 		} else {
-			database = JPAUserDB.getInMemoryInstance();
+			database = new InMemoryJPAUserDB();
 		}
     if(!databaseContainsAdminUser()){
       createFirstAdminUser();

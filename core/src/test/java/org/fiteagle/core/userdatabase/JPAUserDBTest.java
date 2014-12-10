@@ -1,6 +1,7 @@
 package org.fiteagle.core.userdatabase;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -13,7 +14,6 @@ import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateEmailException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicatePublicKeyException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateUsernameException;
 import org.fiteagle.core.userdatabase.JPAUserDB.UserNotFoundException;
-import org.fiteagle.core.userdatabase.User.PublicKeyNotFoundException;
 import org.fiteagle.core.userdatabase.User.Role;
 import org.junit.After;
 import org.junit.Assert;
@@ -63,7 +63,7 @@ public class JPAUserDBTest {
   
   @BeforeClass
   public static void setUp(){
-    manager = JPAUserDB.getInMemoryInstance();
+    manager = new InMemoryJPAUserDB();
   }
   
   @Test
@@ -176,13 +176,6 @@ public class JPAUserDBTest {
     createUser1();
     manager.add(USER1);
     manager.renameKey(USER1.getUsername(), "key1", "key2");
-  }
-  
-  @Test(expected = PublicKeyNotFoundException.class)
-  public void testRenameKeyNotFound() {
-    createUser1();
-    manager.add(USER1);
-    manager.renameKey(USER1.getUsername(), "key5", "my new description");
   }
   
   @Test(expected = DuplicateEmailException.class)

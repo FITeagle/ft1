@@ -15,53 +15,63 @@ import org.fiteagle.core.userdatabase.User.Role;
 
 public class JPAUserDB{
   
-  private EntityManager manager;
+  protected EntityManager manager;
   
-  private static final String PERSISTENCE_UNIT_NAME_HIBERNATE = "Users_Hibernate";
-  private static final String PERSISTENCE_UNIT_NAME_INMEMORY = "Users_InMemory";
   
-  private static JPAUserDB derbyInstance;
-  private static JPAUserDB inMemoryInstance;
+  private static JPAUserDB instance;
   
-  public JPAUserDB(){
-	  derbyInstance = this;
+//  public JPAUserDB(){
+//	  instance = this;
+//  }
+  
+  protected void beginTransaction(EntityManager em) {
   }
   
-  private JPAUserDB(String persistenceUnitName) {
+  protected void commitTransaction(EntityManager em) {
   }
   
-  public static JPAUserDB getInMemoryInstance(){
-    if(inMemoryInstance == null){
-      inMemoryInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_INMEMORY);
+  protected void flushTransaction(EntityManager em) {
+    em.flush();
+  }
+  
+  protected JPAUserDB() {
+  }
+  
+  public static JPAUserDB getInstance(){
+    if(instance == null){
+      instance = new JPAUserDB();
     }
-    return inMemoryInstance;
+    return instance;
   }
   
-  public static JPAUserDB getHibernateInstance(){
-    if(derbyInstance == null){
-      derbyInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_HIBERNATE);
+  protected synchronized EntityManager getEntityManager() {
+    if (manager == null) {
+      try {
+        Context context = new InitialContext();
+        EntityManagerFactory f = (EntityManagerFactory) context.lookup("java:/fiteagle1/users/entitymanagerFactory");
+        manager = f.createEntityManager();
+      } catch (NamingException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
-    return derbyInstance;
-  }
-  
-  private synchronized EntityManager getEntityManager() {
-	  if(manager == null){
-    		try {
-				Context context = new InitialContext();
-				EntityManagerFactory f = (EntityManagerFactory) context.lookup("java:/fiteagle1/users/entitymanagerFactory");
-				manager = f.createEntityManager();
-			} catch (NamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    		
-    	}
     return manager;
   }
   
   public void add(User user){
     EntityManager em = getEntityManager();
+    List<User> users = getAllUsers();
+    for (User u : users) {
+      if (u.getUsername().equals(user.getUsername())) {
+        throw new DuplicateUsernameException();
+      }
+      if (u.getEmail().equals(user.getEmail())) {
+        throw new DuplicateEmailException();
+      }
+    }
+    
     try{
+      beginTransaction(em);
       em.persist(user);
     } catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
@@ -71,6 +81,8 @@ public class JPAUserDB{
         throw new DuplicateUsernameException();
       }
       throw e;
+    } finally {
+      commitTransaction(em);
     }
   }
   
@@ -89,7 +101,9 @@ public class JPAUserDB{
   
   public void delete(User user){
     EntityManager em = getEntityManager();
-      em.remove(em.merge(user));
+    beginTransaction(em);
+    em.remove(em.merge(user));
+    commitTransaction(em);
   }
   
   public void delete(String username){
@@ -103,7 +117,15 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
+      List<User> users = getAllUsers();
+      for (User u : users) {
+        if (u.getEmail().equals(email) && !u.getUsername().equals(username)) {
+          throw new DuplicateEmailException();
+        }
+      }
+      beginTransaction(em);
       user.updateAttributes(firstName, lastName, email, affiliation, password, publicKeys);
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
         throw new DuplicateEmailException();
@@ -118,9 +140,10 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
+      beginTransaction(em);
       user.setRole(role);
+      commitTransaction(em);
   }
-
   
   public void addKey(String username, UserPublicKey publicKey){
     EntityManager em = getEntityManager();
@@ -129,7 +152,12 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
+      if (user.getPublicKeys().contains(publicKey)) {
+        throw new DuplicatePublicKeyException();
+      }
+      beginTransaction(em);
       user.addPublicKey(publicKey);
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
@@ -144,7 +172,9 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
+      beginTransaction(em);
       user.deletePublicKey(description);
+      commitTransaction(em);
   }
   
   public void renameKey(String username, String description, String newDescription){
@@ -154,7 +184,14 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
+      for(UserPublicKey key : user.getPublicKeys()){
+        if(key.getDescription().equals(newDescription)){
+          throw new DuplicatePublicKeyException();
+        }
+      }
+      beginTransaction(em);
       user.renamePublicKey(description, newDescription);
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
