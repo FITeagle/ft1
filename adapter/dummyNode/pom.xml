@@ -29,7 +29,7 @@
   </build>
 	<dependencies>
 		<dependency>
-			<groupId>org.fiteagle</groupId>
+			<groupId>org.fiteagle.adapter</groupId>
 			<artifactId>common</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>

@@ -7,7 +7,7 @@
   </parent>
   <name>FITeagle :: Adapter :: Common</name>
   <artifactId>common</artifactId>
-  <groupId>org.fiteagle.adapters</groupId>
+  <groupId>org.fiteagle.adapter</groupId>
   <packaging>jar</packaging>
   <repositories>
 		<repository>

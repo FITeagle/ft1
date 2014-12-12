@@ -13,8 +13,8 @@
 	</parent>
 
 	<modules>
-		<module>stopwatch</module>
 		<module>common</module>
+		<module>stopwatch</module>
 		<module>sshdeployadapter</module>
     <module>qoSControl</module>
    <module>openstackvmadapter</module>
