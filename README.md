@@ -1,17 +1,29 @@
-FITeagle | Future Internet Testbed Experimentation and Management Framework 
-===========================================================================
+FITeagle 1 | Future Internet Testbed Experimentation and Management Framework 
+=============================================================================
 
-Bootstrap (install & run)
--------------------------
-bash -c "$(curl -fsSkL fiteagle.org/bootstrap)"
+Remark: This is FITeagle in version 1. Initially developed to run in a
+        simple servlet environment (jetty) it was now ported to an J2EE
+        environment (WildFly). This version will not be developed further.
 
-Test
-----
-./src/main/bin/fiteaglectl test
+Prerequirements
+---------------
+You have an up and running WildFly environment. See
+https://github.com/fiteagle/bootstrap/ for details.
 
-Start
------
-./src/main/bin/fiteaglectl start
+Install
+-------
+mvn install -DskipTests && \
+mvn wildfly:deploy -DskipTests
+
+Testing
+-------
+ - Unit testing: ./src/main/bin/fiteaglectl test
+ - Acceptance testing: cd acceptance-test && ./run.sh
+
+Starting
+--------
+ - Jetty Version: ./src/main/bin/fiteaglectl start
+ - WildFly Version: see above
 
 Further Information
 -------------------
