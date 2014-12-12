@@ -12,8 +12,8 @@ https://github.com/fiteagle/bootstrap/ for details.
 
 Install
 -------
-mvn install -DskipTests && \
-mvn wildfly:deploy -DskipTests
+rm -rf ~/.fiteagle
+mvn install -DskipTests && mvn wildfly:deploy -DskipTests
 
 Testing
 -------
