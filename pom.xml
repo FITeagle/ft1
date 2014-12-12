@@ -50,7 +50,7 @@
 		</repository>
 		<repository>
 			<id>fiteagle-repo</id>
-			<url>http://fiteagle.org/maven</url>
+			<url>http://fiteagle.org/maven-disabled</url>
 		</repository>
 	</repositories>
 
