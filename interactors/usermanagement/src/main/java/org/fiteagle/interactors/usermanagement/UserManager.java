@@ -5,7 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateEmailException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicatePublicKeyException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateUsernameException;
@@ -36,44 +35,44 @@ public class UserManager implements UserManagerBoundary{
   }
   
   @Override
-  public void add(User u) throws DuplicateUsernameException, DuplicateEmailException, DatabaseException, User.NotEnoughAttributesException,
+  public void add(User u) throws DuplicateUsernameException, DuplicateEmailException, User.NotEnoughAttributesException,
       User.InValidAttributeException, DuplicatePublicKeyException {
     manager.add(u);    
   }
 
   @Override
-  public void delete(String username) throws DatabaseException {
+  public void delete(String username) {
     manager.delete(username);
   }
 
   @Override
-  public void delete(User u) throws DatabaseException {
+  public void delete(User u) {
     manager.delete(u);
   }
 
   @Override
-  public void update(String username, String firstName, String lastName, String email, String affiliation, String password, List<UserPublicKey> publicKeys) throws UserNotFoundException, DuplicateEmailException, DatabaseException, User.NotEnoughAttributesException,
+  public void update(String username, String firstName, String lastName, String email, String affiliation, String password, List<UserPublicKey> publicKeys) throws UserNotFoundException, DuplicateEmailException, User.NotEnoughAttributesException,
       User.InValidAttributeException, DuplicatePublicKeyException {
     manager.update(username, firstName, lastName, email, affiliation, password, publicKeys);
   }
 
   @Override
-  public void addKey(String username, UserPublicKey key) throws UserNotFoundException, DatabaseException,
+  public void addKey(String username, UserPublicKey key) throws UserNotFoundException,
       User.InValidAttributeException, DuplicatePublicKeyException {
     manager.addKey(username, key);
   }
 
-  public void deleteKey(String username, String description) throws UserNotFoundException, DatabaseException {
+  public void deleteKey(String username, String description) throws UserNotFoundException {
     manager.deleteKey(username, description);
   }
   
   @Override
-  public User get(String username) throws UserNotFoundException, DatabaseException {
+  public User get(String username) throws UserNotFoundException {
     return manager.get(username);
   }
 
   @Override
-  public User get(User u) throws UserNotFoundException, DatabaseException {
+  public User get(User u) throws UserNotFoundException {
     return manager.get(u);
   }
 
@@ -90,7 +89,7 @@ public class UserManager implements UserManagerBoundary{
 
   @Override
   public boolean verifyCredentials(String username, String password) throws NoSuchAlgorithmException, IOException,
-      UserNotFoundException, DatabaseException {
+      UserNotFoundException {
     return manager.verifyCredentials(username, password);
   }
 
@@ -105,8 +104,7 @@ public class UserManager implements UserManagerBoundary{
   }
 
   @Override
-  public void renameKey(String username, String description, String newDescription) throws UserNotFoundException,
-      DatabaseException, DuplicatePublicKeyException, User.InValidAttributeException, PublicKeyNotFoundException {
+  public void renameKey(String username, String description, String newDescription) throws UserNotFoundException, DuplicatePublicKeyException, User.InValidAttributeException, PublicKeyNotFoundException {
     manager.renameKey(username, description, newDescription);    
   }
 

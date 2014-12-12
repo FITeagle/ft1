@@ -2,11 +2,10 @@ package org.fiteagle.core.groupmanagement;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import junit.framework.Assert;
 
-import org.eclipse.persistence.exceptions.DatabaseException;
 import org.fiteagle.core.aaa.KeyManagement;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateEmailException;
 import org.fiteagle.core.userdatabase.JPAUserDB.DuplicateUsernameException;
@@ -34,12 +33,12 @@ public class UserDBManagerTest {
   }
     
   @Test
-  public void testVerifyPassword() throws DuplicateUsernameException, NoSuchAlgorithmException, DatabaseException, IOException{    
+  public void testVerifyPassword() throws DuplicateUsernameException, NoSuchAlgorithmException, IOException{    
     Assert.assertTrue(userDBManager.verifyPassword("password",testUser.getPasswordHash(),testUser.getPasswordSalt()));    
   }
   
   @Test
-  public void testVerifyCredentials() throws UserNotFoundException, DatabaseException, IOException, NoSuchAlgorithmException{    
+  public void testVerifyCredentials() throws UserNotFoundException, IOException, NoSuchAlgorithmException{    
     Assert.assertTrue(userDBManager.verifyCredentials(testUser.getUsername(), "password"));    
   } 
   

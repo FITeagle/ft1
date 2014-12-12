@@ -4,72 +4,75 @@ package org.fiteagle.core.userdatabase;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.fiteagle.core.config.FiteaglePreferences;
-import org.fiteagle.core.config.FiteaglePreferencesXML;
 import org.fiteagle.core.userdatabase.User.Role;
 
 public class JPAUserDB{
   
-  private EntityManagerFactory factory;
-  private final String PERSISTENCE_TYPE;  
+  protected EntityManager manager;
   
-  private static final String DEFAULT_DATABASE_PATH = System.getProperty("user.home")+"/.fiteagle/db/";
-  private static FiteaglePreferences preferences = new FiteaglePreferencesXML(JPAUserDB.class);
   
-  private static final String PERSISTENCE_UNIT_NAME_DERBY = "Users_Derby";
-  private static final String PERSISTENCE_UNIT_NAME_INMEMORY = "Users_InMemory";
+  private static JPAUserDB instance;
   
-  private static JPAUserDB derbyInstance;
-  private static JPAUserDB inMemoryInstance;
+//  public JPAUserDB(){
+//	  instance = this;
+//  }
   
-  private JPAUserDB(String persistenceUnitName) {
-    PERSISTENCE_TYPE = persistenceUnitName;
+  protected void beginTransaction(EntityManager em) {
   }
   
-  static{
-    System.setProperty("derby.system.home", getDatabasePath());
+  protected void commitTransaction(EntityManager em) {
   }
   
-  public static JPAUserDB getInMemoryInstance(){
-    if(inMemoryInstance == null){
-      inMemoryInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_INMEMORY);
+  protected void flushTransaction(EntityManager em) {
+    em.flush();
+  }
+  
+  protected JPAUserDB() {
+  }
+  
+  public static JPAUserDB getInstance(){
+    if(instance == null){
+      instance = new JPAUserDB();
     }
-    return inMemoryInstance;
+    return instance;
   }
   
-  public static JPAUserDB getDerbyInstance(){
-    if(derbyInstance == null){
-      derbyInstance = new JPAUserDB(PERSISTENCE_UNIT_NAME_DERBY);
+  protected synchronized EntityManager getEntityManager() {
+    if (manager == null) {
+      try {
+        Context context = new InitialContext();
+        EntityManagerFactory f = (EntityManagerFactory) context.lookup("java:/fiteagle1/users/entitymanagerFactory");
+        manager = f.createEntityManager();
+      } catch (NamingException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     }
-    return derbyInstance;
-  }
-  
-  private static String getDatabasePath() {
-    if(preferences.get("databasePath") == null){
-      preferences.put("databasePath", DEFAULT_DATABASE_PATH);
-    }
-    return preferences.get("databasePath");
-  }
-  
-  
-  private synchronized EntityManager getEntityManager() {
-    if (factory == null){
-      factory = Persistence.createEntityManagerFactory(PERSISTENCE_TYPE);
-    }
-    return factory.createEntityManager();
+    return manager;
   }
   
   public void add(User user){
     EntityManager em = getEntityManager();
+    List<User> users = getAllUsers();
+    for (User u : users) {
+      if (u.getUsername().equals(user.getUsername())) {
+        throw new DuplicateUsernameException();
+      }
+      if (u.getEmail().equals(user.getEmail())) {
+        throw new DuplicateEmailException();
+      }
+    }
+    
     try{
-      em.getTransaction().begin();
+      beginTransaction(em);
       em.persist(user);
-      em.getTransaction().commit();
     } catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
         throw new DuplicateEmailException();
@@ -78,8 +81,8 @@ public class JPAUserDB{
         throw new DuplicateUsernameException();
       }
       throw e;
-    }finally{
-      em.close();
+    } finally {
+      commitTransaction(em);
     }
   }
   
@@ -89,26 +92,18 @@ public class JPAUserDB{
   
   public User get(String username) throws UserNotFoundException{
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
       return user;
-    }finally{
-      em.close();
-    }
   }
   
   public void delete(User user){
     EntityManager em = getEntityManager();
-    try{
-      em.getTransaction().begin();
-      em.remove(em.merge(user));
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
+    beginTransaction(em);
+    em.remove(em.merge(user));
+    commitTransaction(em);
   }
   
   public void delete(String username){
@@ -122,34 +117,33 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
+      List<User> users = getAllUsers();
+      for (User u : users) {
+        if (u.getEmail().equals(email) && !u.getUsername().equals(username)) {
+          throw new DuplicateEmailException();
+        }
+      }
+      beginTransaction(em);
       user.updateAttributes(firstName, lastName, email, affiliation, password, publicKeys);
-      em.getTransaction().commit();
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("'EMAIL' defined on 'USERS'")){
         throw new DuplicateEmailException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
 
   public void setRole(String username, Role role) {
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
+      beginTransaction(em);
       user.setRole(role);
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
+      commitTransaction(em);
   }
-
   
   public void addKey(String username, UserPublicKey publicKey){
     EntityManager em = getEntityManager();
@@ -158,32 +152,29 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
+      if (user.getPublicKeys().contains(publicKey)) {
+        throw new DuplicatePublicKeyException();
+      }
+      beginTransaction(em);
       user.addPublicKey(publicKey);
-      em.getTransaction().commit();
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
   
   public void deleteKey(String username, String description){
     EntityManager em = getEntityManager();
-    try{
       User user = em.find(User.class, username);
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
+      beginTransaction(em);
       user.deletePublicKey(description);
-      em.getTransaction().commit();
-    }finally{
-      em.close();
-    }
+      commitTransaction(em);
   }
   
   public void renameKey(String username, String description, String newDescription){
@@ -193,28 +184,28 @@ public class JPAUserDB{
       if(user == null){
         throw new UserNotFoundException();
       }
-      em.getTransaction().begin();
+      for(UserPublicKey key : user.getPublicKeys()){
+        if(key.getDescription().equals(newDescription)){
+          throw new DuplicatePublicKeyException();
+        }
+      }
+      beginTransaction(em);
       user.renamePublicKey(description, newDescription);
-      em.getTransaction().commit();
+      commitTransaction(em);
     }catch(Exception e){
       if(e.getCause() != null && e.getCause().getCause() instanceof SQLIntegrityConstraintViolationException && e.getMessage().contains("defined on 'PUBLICKEYS'")){
         throw new DuplicatePublicKeyException();
       }
       throw e;
-    }finally{
-      em.close();
     }
   }
   
   public List<User> getAllUsers(){
     EntityManager em = getEntityManager();
-    try{
       Query query = em.createQuery("SELECT u FROM User u");
+      @SuppressWarnings("unchecked")
       List<User> resultList = (List<User>) query.getResultList();
       return resultList;
-    }finally{
-      em.close();
-    }
   }
   
   public static class UserNotFoundException extends RuntimeException {    
