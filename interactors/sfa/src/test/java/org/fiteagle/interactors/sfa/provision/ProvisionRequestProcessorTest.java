@@ -68,7 +68,7 @@ public class ProvisionRequestProcessorTest {
 //		EasyMock.expectLastCall().anyTimes();
 //		resourceAdapterManager.renewExpirationTime(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class));
 //		EasyMock.replay(resourceAdapterManager);
-//		
+//
 	}
 
 	@After

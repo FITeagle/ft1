@@ -15,8 +15,6 @@ import org.fiteagle.core.groupmanagement.GroupDBManager;
 import org.reflections.Reflections;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.ServletContext;
 
 //TODO exception handling
 
@@ -25,8 +23,7 @@ public class ResourceAdapterManager {
 
     private static final String packageName = "org.fiteagle.adapter";
 
-    @Inject
-    private ServletContext context;
+
 
     private ResourceAdapterDatabase adapterInstancesDatabase;
     private ResourceAdapterDatabase adapterDatabase;
