@@ -97,15 +97,15 @@ public class DeleteRequestProcessorTest {
 		EasyMock.replay(credentials);
 	}
 	
-	@Test
-	public void testDeleteSliver(){
-		List<String> urns = new LinkedList<>();
-		urns.add(sliverURN.toString());
-		setUpCredentialMock();
-		resourceAdapterManager.deleteResource((String)EasyMock.anyObject());
-		EasyMock.expectLastCall();
-		EasyMock.replay(resourceAdapterManager);
-	}
+//	@Test
+//	public void testDeleteSliver(){
+//		List<String> urns = new LinkedList<>();
+//		urns.add(sliverURN.toString());
+//		setUpCredentialMock();
+//		resourceAdapterManager.deleteResource((String)EasyMock.anyObject());
+//		EasyMock.expectLastCall();
+//		EasyMock.replay(resourceAdapterManager);
+//	}
 	
 	
 	

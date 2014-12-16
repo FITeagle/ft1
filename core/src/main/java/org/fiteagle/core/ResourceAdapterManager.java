@@ -142,8 +142,8 @@ private ClassLoader sysloader;
   
  
 
-  public void deleteResource(String resourceAdapterId) {
-	  removeAdapterFromGroup(resourceAdapterId);
+  public void deleteResource(String resourceAdapterId,String groupId) {
+	  removeAdapterFromGroup(resourceAdapterId,groupId);
   }
   
   
@@ -250,8 +250,8 @@ private ClassLoader sysloader;
 		
 	}
 
-	public void removeAdapterFromGroup(String resourceId) {
-		GroupDBManager.getInstance().deleteResourceFromGroup(resourceId);
+	public void removeAdapterFromGroup(String resourceId,String groupId) {
+		GroupDBManager.getInstance().deleteResourceFromGroup(resourceId,groupId);
 		
 		
 	}
