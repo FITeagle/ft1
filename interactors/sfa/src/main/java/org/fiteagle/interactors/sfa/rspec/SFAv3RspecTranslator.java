@@ -11,6 +11,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -49,7 +53,8 @@ public class SFAv3RspecTranslator {
 		geni_rspec_version.setVersion("3");
 
 	}
-
+	@Inject
+	private ResourceAdapterManager resourceAdapterManager;
 	public String getVersion() {
 		return this.geni_rspec_version.getVersion();
 	}
@@ -172,8 +177,7 @@ public Object translateToFITeagleResource(ResourceAdapter resourceAdapter) {
 				break;
 			}
 		}
-		resource = ResourceAdapterManager.getInstance()
-				.getResourceAdapterInstance(id);
+		resource = resourceAdapterManager.getResourceAdapterInstance(id);
 		return resource;
 	}
 

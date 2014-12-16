@@ -50,10 +50,17 @@ import org.fiteagle.interactors.sfa.status.StatusResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import javax.inject.Inject;
+
+
+
+
 public class SFAInteractor_v3 implements ISFA {
 
-	
-	private final SFARequestProcessorFactory requestProcessorFactor = SFARequestProcessorFactory.getInstance();
+	@Inject
+	private  SFARequestProcessorFactory requestProcessorFactor;
+
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private X509Certificate certificate;
