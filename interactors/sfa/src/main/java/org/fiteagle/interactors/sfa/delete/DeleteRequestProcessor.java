@@ -9,7 +9,6 @@ import org.fiteagle.adapter.common.NodeAdapterInterface;
 import org.fiteagle.adapter.common.OpenstackResourceAdapter;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.fiteagle.core.ResourceAdapterManager;
-import org.fiteagle.core.ResourceAdapterManager.ResourceNotFound;
 import org.fiteagle.core.config.InterfaceConfiguration;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;

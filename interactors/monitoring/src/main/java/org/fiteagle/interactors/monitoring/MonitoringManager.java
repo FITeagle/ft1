@@ -14,7 +14,7 @@ import org.fiteagle.ui.infinity.InfinityClient;
 import org.fiteagle.ui.infinity.InfinityClientWeb;
 import org.fiteagle.ui.infinity.model.InfinityInfrastructure;
 import org.fiteagle.ui.infinity.model.InfinityValueID;
-import orgt.fiteagle.core.monitoring.StatusTable;
+import org.fiteagle.core.monitoring.StatusTable;
 
 public class MonitoringManager implements ResourceMonitoringBoundary {
 	

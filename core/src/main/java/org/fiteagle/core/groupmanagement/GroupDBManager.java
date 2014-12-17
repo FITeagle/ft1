@@ -21,10 +21,10 @@ public class GroupDBManager {
   private static enum databaseType {
 	  
 	  
-    InMemory, Persistant
+    InMemory, Persistent
   }
-  private static final String DEFAULT_DATABASE_TYPE = databaseType.Persistant.name();
-  
+  private static final String DEFAULT_DATABASE_TYPE = databaseType.Persistent.name();
+
   private GroupDBManager() throws SQLException{
 	  
 	  Boolean inTestingMode = Boolean.valueOf(System.getProperty("org.fiteagle.core.userdatabase.UserDBManager.testing"));

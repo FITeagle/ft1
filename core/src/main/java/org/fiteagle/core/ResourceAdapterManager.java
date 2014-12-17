@@ -116,7 +116,19 @@ public class ResourceAdapterManager {
         return adapterInstancesDatabase.getResourceAdapter(instanceId);
     }
 
+    public void renewExpirationTime(String resourceId, Date expirationTime) {
 
+        ScheduledFuture<?> existentTimer = expirationMap.get(resourceId);
+        if(existentTimer!=null){
+            existentTimer.cancel(false);
+            setExpires(resourceId, expirationTime);
+            //TODO: set the expires date in resource adapter!
+        }else {
+            //TODO: set this if resource has no timer still..
+        }
+
+
+    }
 
 
   public void deleteResource(String resourceAdapterId,String groupId) {
@@ -128,26 +140,6 @@ public class ResourceAdapterManager {
 	}
   
   
-//  private static Class[] getAllClassesInPackage(String packageName)
-//			throws ClassNotFoundException, IOException {
-//		ClassLoader classLoader = Thread.currentThread()
-//				.getContextClassLoader();
-//		if(classLoader == null) throw new RuntimeException();//TODO: give more information in exception
-//		String path = packageName.replace('.', '/');
-//		Enumeration<URL> resources = classLoader.getResources(path);
-//		List<File> dirs = new ArrayList<File>();
-//		while (resources.hasMoreElements()) {
-//			URL resource = resources.nextElement();
-//			dirs.add(new File(resource.getFile()));
-//		}
-//		ArrayList<Class> classes = new ArrayList<Class>();
-//		for (File directory : dirs) {
-//			classes.addAll(findClassesInDirectory(directory, packageName));
-//		}
-//		
-//		//this has duplicate entries in classes!
-//		return classes.toArray(new Class[classes.size()]);
-//	}
 
     public void setExpires(String resourceId, Date allocationExpirationTime) {
         ScheduledFuture<?> scheduler = executor.schedule(new ExpirationCallback(resourceId), allocationExpirationTime.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
@@ -155,28 +147,6 @@ public class ResourceAdapterManager {
         expirationMap.put(resourceId, scheduler);
     }
 
-    private class ExpirationCallback implements Runnable {
-
-        private String resourceId;
-        private String groupId;
-
-        public ExpirationCallback(String resourceId) {
-            this.resourceId = resourceId;
-
-        }
-
-        @Override
-        public void run() {
-            ResourceAdapter expiredAdapter = adapterInstancesDatabase.getResourceAdapter(resourceId);
-//			removeAdapterFromGroup(resourceId);
-
-
-		
-	}
-        
-	
-		
-    }
 
     public List<ResourceAdapter> getResourceAdapterInstancesAvailable() {
         List<ResourceAdapter> availableAdapters = new LinkedList<>();
@@ -195,5 +165,47 @@ public class ResourceAdapterManager {
         }
         return availableAdapters;
     }
+
+    public List<ResourceAdapter> getResourceAdapterInstancesById(List<String> resourceIds) {
+        List<ResourceAdapter> resourceAdapterList = new ArrayList<>();
+        for(String s: resourceIds){
+            ResourceAdapter ra = getResourceAdapterInstance(s);
+            resourceAdapterList.add(ra);
+        }
+        return  resourceAdapterList;
+    }
+
+    private class ExpirationCallback implements Runnable {
+
+        private String resourceId;
+        private String groupId;
+
+        public ExpirationCallback(String resourceId) {
+            this.resourceId = resourceId;
+
+        }
+
+        @Override
+        public void run() {
+            ResourceAdapter expiredAdapter = adapterInstancesDatabase.getResourceAdapter(resourceId);
+//			removeAdapterFromGroup(resourceId);
+
+
+
+        }
+
+
+
+    }
+
+    public static class ResourceNotFound extends RuntimeException{
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+    }
+
 
 }

@@ -596,8 +596,7 @@ return error;
 		ArrayList<GeniSlivers> slivers = new ArrayList<GeniSlivers>();
 
 		List<String> resourceIds = group.getResources();
-		List<ResourceAdapter> resources = resourceManager
-				.getResourceAdapterInstancesById(resourceIds);
+		List<ResourceAdapter> resources = resourceManager.getResourceAdapterInstancesById(resourceIds);
 
 		
 
