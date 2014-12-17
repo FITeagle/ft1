@@ -16,7 +16,6 @@ import org.fiteagle.interactors.sfa.rspec.advertisement.RSpecContents;
 
 
 public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
-	private ResourceAdapterManager resourceManager;
 	private ListResourceOptionsService optionsService;
 
 
@@ -32,9 +31,6 @@ public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
 
 	}
 
-	public void setResourceManager(ResourceAdapterManager resourceManager){
-		this.resourceManager = resourceManager;
-	}
 	private ListResourcesResult getResult(ListCredentials listCredentials,
 			ListResourceOptions options) {
 
@@ -110,17 +106,15 @@ public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
 		RSpecContents advertisedRspec;
 		//TODO: check if this works correctly!! this will be needed to list resources.
 		if (optionsService.isAvailableSet()) {
-//			resourceAdapters = resourceManager.getResourceAdapterInstancesAvailable();
-			resourceAdapters = resourceManager.getResourceAdaptersAvailable();
+			resourceAdapters = getResourceAdapterManager().getResourceAdaptersAvailable();
 		} 
 		else{
-//			resourceAdapters = resourceManager.getResourceAdapterInstances();
-			resourceAdapters = resourceManager.getResourceAdapters();
+			resourceAdapters = getResourceAdapterManager().getResourceAdapters();
 		}
 		
 		
 		
-		AdvertisementRspecTranslator adTranslator = new AdvertisementRspecTranslator();
+		AdvertisementRspecTranslator adTranslator = new AdvertisementRspecTranslator(getResourceAdapterManager());
 		advertisedRspec = adTranslator.getAdvertisedRSpec(resourceAdapters);
 		String advertisedRspecSTR = adTranslator.getAdvertisedRSpecString(advertisedRspec);
 

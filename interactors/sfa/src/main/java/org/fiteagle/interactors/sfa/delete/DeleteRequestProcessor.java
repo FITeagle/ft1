@@ -27,7 +27,6 @@ import org.fiteagle.interactors.sfa.util.DateUtil;
 
 public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 
-	private ResourceAdapterManager resourceManager;
 	private GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
 	private GroupDBManager groupManager;
 
@@ -64,7 +63,7 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 	}
 
 	private ArrayList<GeniSlivers> getDeleteResultValue(List<String> urns) {
-		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
+		SFAv3RspecTranslator translator = new SFAv3RspecTranslator(getResourceAdapterManager());
 		//the urn is a slice urn..
 		String test = urns.get(0);
 		ArrayList<GeniSlivers> slivers = new ArrayList<>();
@@ -78,7 +77,7 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 				return slivers;
 			}
 			List<String> resourceAdapterInstanceIds = group.getResources();
-			List<ResourceAdapter> resourceAdapterInstances = resourceManager
+			List<ResourceAdapter> resourceAdapterInstances = getResourceAdapterManager()
 					.getResourceAdapterInstancesById(resourceAdapterInstanceIds);
 			while (resourceAdapterInstances.size() > 0) {
 				ResourceAdapter resourceAdapter = (ResourceAdapter) resourceAdapterInstances
@@ -89,7 +88,7 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 				String id = resourceAdapter.getId();
 				// String urn = translator.translateResourceIdToSliverUrn(id,
 				// urns.get(0));
-				resourceManager.deleteResource(id,group.getGroupId());
+				getResourceAdapterManager().deleteResource(id,group.getGroupId());
 				// delete this from the group
 				// group = GroupDBManager.getInstance().getGroup(
 				// sliceURN.getSubjectAtDomain());
@@ -201,9 +200,7 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 		return null;
 	}
 
-	public void setResourceManager(ResourceAdapterManager instance) {
-		this.resourceManager = instance;
-	}
+
 
 	public void setGroupDBManager(GroupDBManager groupManager) {
 		this.groupManager = groupManager;

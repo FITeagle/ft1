@@ -3,9 +3,14 @@ package org.fiteagle.interactors.sfa.rspec.request;
 import java.util.ArrayList;
 
 import org.fiteagle.adapter.common.NodeAdapterInterface;
+import org.fiteagle.core.ResourceAdapterManager;
 import org.fiteagle.interactors.sfa.rspec.SFAv3RspecTranslator;
 
 public class RequestRspecTranslator extends SFAv3RspecTranslator {
+
+	public RequestRspecTranslator(ResourceAdapterManager resourceAdapterManager){
+		super(resourceAdapterManager);
+	}
 	private final String requestRspecNamespace = "http://www.geni.net/resources/rspec/3";
 	private final String requestRspecSchema = "http://www.geni.net/resources/rspec/3/request.xsd";
 	private final ArrayList<String> requestRspecExtensions = new ArrayList<String>();

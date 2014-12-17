@@ -17,6 +17,7 @@ import org.fiteagle.adapter.common.OpenstackResourceAdapter;
 import org.fiteagle.adapter.common.PhysicalNodeAdapterInterface;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.fiteagle.adapter.common.SSHAccessable;
+import org.fiteagle.core.ResourceAdapterManager;
 import org.fiteagle.interactors.sfa.common.Geni_RSpec_Version;
 import org.fiteagle.interactors.sfa.rspec.SFAv3RspecTranslator;
 import org.fiteagle.interactors.sfa.rspec.advertisement.NodeContents.SliverType;
@@ -34,8 +35,9 @@ public class AdvertisementRspecTranslator extends SFAv3RspecTranslator {
 	private final ArrayList<String> adRspecExtensions = new ArrayList<String>();
 	private final String RSPEC_EXTENSION = "http://fiteagle.org/rspec/ext/1";
 
-	public AdvertisementRspecTranslator() {
-		super();
+
+	public AdvertisementRspecTranslator(ResourceAdapterManager resourceAdapterManager) {
+		super(resourceAdapterManager);
 		addAdRspecExtension(this.RSPEC_EXTENSION);
 	}
 
@@ -43,7 +45,7 @@ public class AdvertisementRspecTranslator extends SFAv3RspecTranslator {
 	// based solution
 	public RSpecContents getAdvertisedRSpec(
 			List<ResourceAdapter> resourceAdapters) {
-		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
+		SFAv3RspecTranslator translator = new SFAv3RspecTranslator(getResourceAdapterManager());
 		RSpecContents adRSpecContents = new RSpecContents();
 		adRSpecContents.setType("advertisement");
 		List<Object> rspecElements = adRSpecContents.getAnyOrNodeOrLink();
@@ -124,7 +126,7 @@ public class AdvertisementRspecTranslator extends SFAv3RspecTranslator {
 		// openstackAdapter.getFlavorsProperties();
 
 		// get the openstack resources as openstack resource def..
-		JAXBElement<OpenstackResource> openStackResourceAsJaxb = (JAXBElement<OpenstackResource>) new SFAv3RspecTranslator()
+		JAXBElement<OpenstackResource> openStackResourceAsJaxb = (JAXBElement<OpenstackResource>) new SFAv3RspecTranslator(getResourceAdapterManager())
 				.translateOpenstackResourceAdapterToAdvertisementOpenstackResource((OpenstackResourceAdapter) openstackAdapter);
 		OpenstackResource openstackResource = openStackResourceAsJaxb
 				.getValue();
@@ -172,7 +174,7 @@ public class AdvertisementRspecTranslator extends SFAv3RspecTranslator {
 						.next();
 				SliverType sliverType = sliverTypeJaxb.getValue();
 
-				JAXBElement<OpenstackResource> openStackResourceContainingImageAsJaxb = (JAXBElement<OpenstackResource>) new SFAv3RspecTranslator()
+				JAXBElement<OpenstackResource> openStackResourceContainingImageAsJaxb = (JAXBElement<OpenstackResource>) new SFAv3RspecTranslator(getResourceAdapterManager())
 						.translateOpenstackResourceAdapterToAdvertisementOpenstackResource((OpenstackResourceAdapter) openstackResourceAdapterContainingDiskImage);
 				OpenstackResource openStackResourceContainingImage = openStackResourceContainingImageAsJaxb
 						.getValue();

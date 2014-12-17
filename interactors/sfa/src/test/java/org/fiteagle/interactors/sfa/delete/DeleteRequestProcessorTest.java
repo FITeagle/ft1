@@ -37,7 +37,7 @@ public class DeleteRequestProcessorTest {
 		resourceAdapterManager = EasyMock.createMock(ResourceAdapterManager.class);
 		groupManager = EasyMock.createMock(GroupDBManager.class);
 		deleteProc.setGroupDBManager(groupManager);
-		deleteProc.setResourceManager(resourceAdapterManager);
+		deleteProc.setResourceAdapterManager(resourceAdapterManager);
 		deleteOptions = EasyMock.createMock(DeleteOptions.class);
 		listCredentials = EasyMock.createMock(ListCredentials.class);
 		credentialList = new ArrayList<>();

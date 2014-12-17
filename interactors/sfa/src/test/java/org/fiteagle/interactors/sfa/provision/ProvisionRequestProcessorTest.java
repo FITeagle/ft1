@@ -36,7 +36,7 @@ public class ProvisionRequestProcessorTest {
 	public void setUp() throws Exception {
 		processor = new ProvisionRequestProcessor();
 		buildMocks();
-		processor.setResourceManager(resourceAdapterManager);
+		processor.setResourceAdapterManager(resourceAdapterManager);
 		urns = new LinkedList();
 		createOptionsRSv3();
 		listCredentials = getListCredentials();

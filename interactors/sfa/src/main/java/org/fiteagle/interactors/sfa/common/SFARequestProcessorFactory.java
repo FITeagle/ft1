@@ -41,43 +41,42 @@ public class SFARequestProcessorFactory {
 		switch (method) {
 		case ALLOCATE:
 			AllocateRequestProcessor allocateRequestProcessor = new AllocateRequestProcessor();
-			allocateRequestProcessor.setResourceManager(resourceAdapterManager);
+			allocateRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) allocateRequestProcessor;
 
 			break;
 		case DELETE:
 			DeleteRequestProcessor delProc = new DeleteRequestProcessor();
-			delProc.setResourceManager(resourceAdapterManager);
+			delProc.setResourceAdapterManager(resourceAdapterManager);
 			delProc.setGroupDBManager(GroupDBManager.getInstance());
 			result = (E) delProc;
 			break;
 		case DESCRIBE:
 			DescribeRequestProcessor describeRequestProcessor = new DescribeRequestProcessor();
-			describeRequestProcessor.setResourceManager(resourceAdapterManager);
+			describeRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) describeRequestProcessor;
 			break;
 		case LIST_RESOURCES:
 			ListResourceRequestProcessor listResourceRequestProcessor = new ListResourceRequestProcessor();
-			listResourceRequestProcessor.setResourceManager(resourceAdapterManager);
+			listResourceRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) listResourceRequestProcessor;
 			break;
 		case PERFORM_OPERATIONAL_ACTION:
 			PerformOperationalActionRequestProcessor performOperationalActionRequestProcessor = new PerformOperationalActionRequestProcessor();
-			performOperationalActionRequestProcessor.setResourceManager(resourceAdapterManager);
+			performOperationalActionRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) performOperationalActionRequestProcessor;
 			break;
 		case PROVISION:
 			ProvisionRequestProcessor provisionRequestProcessor = new ProvisionRequestProcessor();
-			provisionRequestProcessor.setResourceManager(resourceAdapterManager);
+			provisionRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) provisionRequestProcessor;
 			break;
 		case RENEW_SLICE:
 			RenewSliceRequestProcessor renewSliceRequestProcessor = new RenewSliceRequestProcessor(KeyStoreManagement.getInstance(), GroupDBManager.getInstance());
-			renewSliceRequestProcessor.setResourceManager(resourceAdapterManager);
+			renewSliceRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) renewSliceRequestProcessor;
 			break;
 		case RENEW:
-//			RenewRequestProcessor renewRequestProcessor = new RenewSliceRequestProcessor(KeyStoreManagement.getInstance(), GroupDBManager.getInstance());
 			RenewRequestProcessor renewRequestProcessor = new RenewRequestProcessor(resourceAdapterManager, GroupDBManager.getInstance());
 			result = (E) renewRequestProcessor;
 			break;
@@ -88,11 +87,14 @@ public class SFARequestProcessorFactory {
 			break;
 		case STATUS:
 			StatusRequestProcessor statusRequestProcessor = new StatusRequestProcessor();
-			statusRequestProcessor.setResourceManager(resourceAdapterManager);
+			statusRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 			result = (E) statusRequestProcessor;
 			break;
 		case GET_VERSION:
-			result = (E) new GetVersionRequestProcessor();
+			GetVersionRequestProcessor getVersionRequestProcessor = new GetVersionRequestProcessor();
+			getVersionRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
+			result = (E) getVersionRequestProcessor;
+
 			break;
 		case REGISTER:
 			RegisterRequestProcessor registerRequestProcessor = new RegisterRequestProcessor(

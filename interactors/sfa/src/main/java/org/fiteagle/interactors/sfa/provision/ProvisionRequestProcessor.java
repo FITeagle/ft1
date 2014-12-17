@@ -40,7 +40,6 @@ import org.fiteagle.interactors.sfa.util.DateUtil;
 
 public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 
-	private ResourceAdapterManager resourceManager;
 
 	GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
 
@@ -52,13 +51,6 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 
 	private List<ResourceAdapter> resources;
 
-	public ResourceAdapterManager getResourceManager() {
-		return resourceManager;
-	}
-
-	public void setResourceManager(ResourceAdapterManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
 
 	public ProvisionResult processRequest(List<String> urns,
 			ListCredentials credentials, ProvisionOptions provisionOptions) {
@@ -123,7 +115,7 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 		}
 
 		resultValue.setGeni_slivers(slivers);
-		ManifestRspecTranslator translator = new ManifestRspecTranslator();
+		ManifestRspecTranslator translator = new ManifestRspecTranslator(getResourceAdapterManager());
 		RSpecContents manifestRSpec = translator.getManifestRSpec(resources);
 		String geni_rspec = translator.getRSpecString(manifestRSpec);
 		resultValue.setGeni_rspec(geni_rspec);
@@ -145,7 +137,7 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 		if (urn.getType().equals("sliver")) {
 			List<String> resourceIds = new ArrayList<String>();
 			resourceIds.add(urn.getSubject());
-			resources = resourceManager
+			resources = getResourceAdapterManager()
 					.getResourceAdapterInstancesById(resourceIds);
 
 			for (ResourceAdapter resourceAdapter : resources) {
@@ -173,7 +165,7 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 					provsionResourceAdapter(resourceAdapter);					
 					ArrayList<String> nodeIdAsList = new ArrayList<String>();
 					nodeIdAsList.add(nodeId);
-					List<ResourceAdapter> nodeAdapterAsList = resourceManager.getResourceAdapterInstancesById(nodeIdAsList);
+					List<ResourceAdapter> nodeAdapterAsList = getResourceAdapterManager().getResourceAdapterInstancesById(nodeIdAsList);
 					NodeAdapterInterface nodeAdapter = (NodeAdapterInterface) nodeAdapterAsList.get(0);
 					List<GeniSlivers> sliverList = buildSliversForNodeAdapter(nodeAdapter);
 					if (sliverList != null)
@@ -212,7 +204,7 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 		}
 
 		List<String> resourceIds = group.getResources();
-		resources = resourceManager
+		resources = getResourceAdapterManager()
 				.getResourceAdapterInstancesById(resourceIds);
 
 		for (ResourceAdapter resourceAdapter : resources) {
@@ -311,7 +303,7 @@ public class ProvisionRequestProcessor extends SFAv3RequestProcessor {
 
 			resourceAdapter
 					.setExpirationTime(getExpirationDate(provisionOptions));
-			resourceManager.renewExpirationTime(resourceAdapter.getId(),
+			getResourceAdapterManager().renewExpirationTime(resourceAdapter.getId(),
 					resourceAdapter.getExpirationTime());
 			
 			//if resource adapter openstackResAdap => check..

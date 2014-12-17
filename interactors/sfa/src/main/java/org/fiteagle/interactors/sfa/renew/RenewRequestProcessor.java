@@ -30,12 +30,11 @@ import org.fiteagle.interactors.sfa.rspec.manifest.RSpecContents;
 
 public class RenewRequestProcessor extends SFAv3RequestProcessor {
 	
-	private ResourceAdapterManager resourceManager;
 	private GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
 	private GroupDBManager groupManager;
 	
 	public RenewRequestProcessor(ResourceAdapterManager rm, GroupDBManager gdbm) {
-		this.resourceManager = rm;
+		setResourceAdapterManager(rm);
 		this.groupManager = gdbm;
 	}
 
@@ -74,7 +73,7 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 			}
 
 			List<String> resourceIds = group.getResources();
-			List<ResourceAdapter> resources = resourceManager
+			List<ResourceAdapter> resources = getResourceAdapterManager()
 					.getResourceAdapterInstancesById(resourceIds);
 
 			for (ResourceAdapter resourceAdapter : resources) {
@@ -90,7 +89,7 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 						
 						Date expirationTimeDate=new RenewSliceRequestProcessor(null, groupManager).getDateFromString(expirationTime);
 						openstackResourceAdapter.setExpirationTime(expirationTimeDate);
-						resourceManager.renewExpirationTime(openstackResourceAdapter.getId(), expirationTimeDate);
+						getResourceAdapterManager().renewExpirationTime(openstackResourceAdapter.getId(), expirationTimeDate);
 						
 					}
 					
@@ -130,13 +129,13 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 					// TODO: get the node if its openstack
 					ArrayList<String> adapterIds = new ArrayList<String>();
 					adapterIds.add(id);
-					List<ResourceAdapter> resAdapterAsList = resourceManager.getResourceAdapterInstancesById(adapterIds);
+					List<ResourceAdapter> resAdapterAsList = getResourceAdapterManager().getResourceAdapterInstancesById(adapterIds);
 					
 					//TODO: get from string the expi time: 
 					
 					Date expirationTimeDate=new RenewSliceRequestProcessor(null, groupManager).getDateFromString(expirationTime);
 					resAdapterAsList.get(0).setExpirationTime(expirationTimeDate);
-					resourceManager.renewExpirationTime(id, expirationTimeDate);
+					getResourceAdapterManager().renewExpirationTime(id, expirationTimeDate);
 					
 					
 				} catch (ResourceNotFound e) {
@@ -151,7 +150,7 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 				//--------
 				ArrayList<String> adapterIdStrings = new ArrayList<String>();
 				adapterIdStrings.add(id);
-				List<ResourceAdapter> resources = resourceManager.getResourceAdapterInstancesById(adapterIdStrings);
+				List<ResourceAdapter> resources = getResourceAdapterManager().getResourceAdapterInstancesById(adapterIdStrings);
 				
 				ProvisionRequestProcessor helperProcessor = new ProvisionRequestProcessor();
 				
@@ -177,7 +176,7 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 						
 						ArrayList<String> nodeIdAsList = new ArrayList<String>();
 						nodeIdAsList.add(nodeId);
-						List<ResourceAdapter> nodeAdapterAsList = resourceManager.getResourceAdapterInstancesById(nodeIdAsList);
+						List<ResourceAdapter> nodeAdapterAsList = getResourceAdapterManager().getResourceAdapterInstancesById(nodeIdAsList);
 						NodeAdapterInterface nodeAdapter = (NodeAdapterInterface) nodeAdapterAsList.get(0);
 						List<GeniSlivers> sliverList = helperProcessor.buildSliversForNodeAdapter(nodeAdapter);
 						if (sliverList != null)
@@ -196,7 +195,7 @@ public class RenewRequestProcessor extends SFAv3RequestProcessor {
 			
 			ArrayList<String> adapterIds = new ArrayList<String>();
 			adapterIds.add(urnList.get(0).getSubject());
-			List<ResourceAdapter> resAdapterAsList = resourceManager.getResourceAdapterInstancesById(adapterIds);//TODO: check this!!!!!!!
+			List<ResourceAdapter> resAdapterAsList = getResourceAdapterManager().getResourceAdapterInstancesById(adapterIds);//TODO: check this!!!!!!!
 			
 //			resultValue.setGeni_slivers(slivers);
 //			ManifestRspecTranslator translator = new ManifestRspecTranslator();

@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
-	private ResourceAdapterManager resourceManager;
 
 	public AllocateResult processRequest(String urn,
 			ListCredentials credentials, RSpecContents requestRspec,
@@ -174,8 +173,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 									instanceId = p.getValue();
 								}
 							}
-							resource = resourceManager
-									.getResourceAdapterInstance(instanceId);
+							resource = getResourceAdapterManager().getResourceAdapterInstance(instanceId);
 						}
 
 						if (OpenstackResource.class.isAssignableFrom(jaxbElem
@@ -187,7 +185,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 							VmToInstantiate vmToInstantiate = openstackResource
 									.getVmToInstantiate();
 
-							OpenstackResourceAdapter openstackResourceAdapter = (OpenstackResourceAdapter) resourceManager
+							OpenstackResourceAdapter openstackResourceAdapter = (OpenstackResourceAdapter) getResourceAdapterManager()
 									.getResourceAdapterInstance(openstackResource
 											.getResourceId());
 							// resource = (ResourceAdapter)
@@ -201,7 +199,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 											vmToInstantiate.getVmName(),
 											vmToInstantiate.getKeyPairName());
 
-							resourceManager
+							getResourceAdapterManager()
 									.addResourceAdapterInstance(resource);// TODO:
 																			// check
 																			// this
@@ -224,7 +222,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 								continue;
 							}
 
-							String nodeName = new RequestRspecTranslator()
+							String nodeName = new RequestRspecTranslator(getResourceAdapterManager())
 							.getNodeNameFromNodeComponentId(node
 									.getComponentId());
 							
@@ -237,7 +235,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 								if(nodeName == null) 
 									nodeName = NodeAdapterInterface.nodeName;
 								
-								NodeAdapterInterface openstackNodeResourceAdapter = (NodeAdapterInterface) resourceManager
+								NodeAdapterInterface openstackNodeResourceAdapter = (NodeAdapterInterface) getResourceAdapterManager()
 										.getResourceAdapterInstance(NodeAdapterInterface.nodeName);
 								
 								List<OpenstackResourceAdapter> allocatedImages = new ArrayList<OpenstackResourceAdapter>();
@@ -295,14 +293,14 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 										.create(null, allocatedImages, node.getClientId());
 								ResourceAdapter result1 = (ResourceAdapter) allocatedNode;
 								resource = result1;
-								resourceManager
+								getResourceAdapterManager()
 								.addResourceAdapterInstance(resource);// TODO: check this if this is needed or extra!!
 								
 								List<OpenstackResourceAdapter> allocatedVMs = allocatedNode.getVms();
 								for (Iterator iterator2 = allocatedVMs
 										.iterator(); iterator2.hasNext();) {
 									ResourceAdapter openstackResourceAdapter = (ResourceAdapter) iterator2.next();
-									resourceManager.addResourceAdapterInstance(openstackResourceAdapter);
+									getResourceAdapterManager().addResourceAdapterInstance(openstackResourceAdapter);
 								}
 								
 							}else {
@@ -325,7 +323,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 										org.fiteagle.interactors.sfa.rspec.request.NodeContents.SliverType sliverTypeTmp = (org.fiteagle.interactors.sfa.rspec.request.NodeContents.SliverType) tmpContent.getValue();
 										if(sliverTypeTmp.getName().compareToIgnoreCase("raw-pc")==0){//TODO: use constants here
 											// get the resource adapter with this name..
-											PhysicalNodeAdapterInterface physicalNodeAdapter = (PhysicalNodeAdapterInterface) resourceManager.getResourceAdapterInstance(nodeName);
+											PhysicalNodeAdapterInterface physicalNodeAdapter = (PhysicalNodeAdapterInterface) getResourceAdapterManager().getResourceAdapterInstance(nodeName);
 											physicalNodeAdapter.create(node.getClientId());
 											
 											
@@ -334,7 +332,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 											tmpPhysicalNodeAdapter.getProperties().put("allocation_status",GENISliverAllocationState.geni_allocated.toString());
 											tmpPhysicalNodeAdapter.setStatus(ResourceAdapterStatus.Reserved);
 											tmpPhysicalNodeAdapter.setExpirationTime(expirationDate);
-											resourceManager.setExpires(tmpPhysicalNodeAdapter.getId(), expirationDate);
+											getResourceAdapterManager().setExpires(tmpPhysicalNodeAdapter.getId(), expirationDate);
 											resource = (ResourceAdapter) physicalNodeAdapter;
 										}
 										
@@ -384,25 +382,11 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 								openstackResourceAdapter.setStatus(ResourceAdapterStatus.Reserved);
 							
 								openstackResourceAdapter.setExpirationTime(expirationDate);
-								resourceManager.setExpires(openstackResourceAdapter.getId(),
+								getResourceAdapterManager().setExpires(openstackResourceAdapter.getId(),
 										expirationDate);
 
 							}
-//
-//							resource.getProperties()
-//									.put("operational_status",
-//											GENISliverOperationalState.geni_pending_allocation
-//													.toString());
-//							resource.getProperties().put(
-//									"allocation_status",
-//									GENISliverAllocationState.geni_allocated
-//											.toString());
-//							resource.setStatus(ResourceAdapterStatus.Reserved);
-//							Date allocationExpirationTime = Calendar
-//									.getInstance().getTime();
-//							allocationExpirationTime
-//									.setTime(allocationExpirationTime.getTime() + 10 * 1000 * 60);
-//							resource.setExpirationTime(allocationExpirationTime);
+
 							
 							resourcesList.add(resource);
 						} else if (resource != null
@@ -426,7 +410,7 @@ public class AllocateRequestProcessor extends SFAv3RequestProcessor {
 							allocationExpirationTime
 									.setTime(allocationExpirationTime.getTime() + 10 * 1000 * 60);
 							resource.setExpirationTime(allocationExpirationTime);
-							resourceManager.setExpires(resource.getId(),
+							getResourceAdapterManager().setExpires(resource.getId(),
 									allocationExpirationTime);
 							resourcesList.add(resource);
 						} else {
@@ -596,7 +580,7 @@ return error;
 		ArrayList<GeniSlivers> slivers = new ArrayList<GeniSlivers>();
 
 		List<String> resourceIds = group.getResources();
-		List<ResourceAdapter> resources = resourceManager.getResourceAdapterInstancesById(resourceIds);
+		List<ResourceAdapter> resources = getResourceAdapterManager().getResourceAdapterInstancesById(resourceIds);
 
 		
 
@@ -652,7 +636,7 @@ return error;
 		}
 		resultValue.setGeni_slivers(slivers);
 
-		ManifestRspecTranslator translator = new ManifestRspecTranslator();
+		ManifestRspecTranslator translator = new ManifestRspecTranslator(getResourceAdapterManager());
 		org.fiteagle.interactors.sfa.rspec.manifest.RSpecContents manifestRSpec = translator
 				.getManifestRSpec(resources);
 		String geni_rspec = translator.getRSpecString(manifestRSpec);
@@ -668,16 +652,7 @@ return error;
 		return null;
 	}
 
-	public ResourceAdapterManager getResourceManager() {
-		return resourceManager;
-	}
 
-	public void setResourceManager(ResourceAdapterManager resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	
-	
 	
 	public SignedCredential buildCredential(String credential) throws JAXBException {
 		  JAXBContext context = JAXBContext.newInstance("org.fiteagle.interactors.sfa.getSelfCredential.jaxbClasses");

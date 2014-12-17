@@ -36,7 +36,6 @@ public class RenewSliceRequestProcessor extends SFAv3RequestProcessor {
 	private KeyStoreManagement keyStoreManagement;
 	private GroupDBManager groupDBManager;
 	
-	private ResourceAdapterManager resourceManager;
 
 
 	public RenewSliceRequestProcessor(KeyStoreManagement keystoreInstance,
@@ -53,11 +52,6 @@ public class RenewSliceRequestProcessor extends SFAv3RequestProcessor {
 		return null;
 	}
 
-//	public String processRequest(Date dateTime, ListCredentials credentials) {
-//		System.out.println(credentials);
-//		System.out.println(dateTime);
-//		return null;
-//	}
 
 	public HashMap<String, Object> renew(HashMap<String, Object> parameters) {
 		String dateTimeString = (String) parameters.get("expiration");
@@ -135,9 +129,6 @@ public class RenewSliceRequestProcessor extends SFAv3RequestProcessor {
 		return null;
 	}
 
-	public void setResourceManager(ResourceAdapterManager instance) {
-		this.resourceManager = instance;
-	}
 
 
 	public KeyStoreManagement getKeyStoreManagement() {

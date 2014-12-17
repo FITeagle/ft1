@@ -34,7 +34,6 @@ import org.fiteagle.interactors.sfa.util.DateUtil;
 
 public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 
-	private ResourceAdapterManager resourceManager;
 	private DescribeOptionsService optionsService;
 	private String outPutString = "";
 	private GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
@@ -53,9 +52,6 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 		return result;
 	}
 
-	public void setResourceManager(ResourceAdapterManager resourceManager){
-		this.resourceManager = resourceManager;
-	}
 	private DescribeResult getResult(List<String> urns,
 			ListCredentials credentials, DescribeOptions options) {
 		String value = "";
@@ -155,7 +151,7 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 			resultValue.setGeni_urn(URN.getURNFromGroup(group).toString());
 			
 			List<String> resourceIds = group.getResources();
-			resources = resourceManager
+			resources = getResourceAdapterManager()
 					.getResourceAdapterInstancesById(resourceIds);
 			for (Iterator iterator = resources.iterator(); iterator.hasNext();) {
 				ResourceAdapter resourceAdapter = (ResourceAdapter) iterator
@@ -184,7 +180,7 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 				URN urn = (URN) iterator.next();
 				List<String> resourceIds = new ArrayList<String>();
 				resourceIds.add(urn.getSubject());
-				resources = resourceManager
+				resources = getResourceAdapterManager()
 						.getResourceAdapterInstancesById(resourceIds);
 				
 
@@ -207,7 +203,7 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 						
 						ArrayList<String> nodeIdAsList = new ArrayList<String>();
 						nodeIdAsList.add(nodeId);
-						List<ResourceAdapter> nodeAdapterAsList = resourceManager.getResourceAdapterInstancesById(nodeIdAsList);
+						List<ResourceAdapter> nodeAdapterAsList = getResourceAdapterManager().getResourceAdapterInstancesById(nodeIdAsList);
 						NodeAdapterInterface nodeAdapter = (NodeAdapterInterface) nodeAdapterAsList.get(0);
 						
 //						resultValue.setGeni_urn(URN.getURNFromResourceAdapter((ResourceAdapter)nodeAdapter).toString());
@@ -245,7 +241,7 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 		
 
 		resultValue.setGeni_slivers(slivers);
-		ManifestRspecTranslator translator = new ManifestRspecTranslator();
+		ManifestRspecTranslator translator = new ManifestRspecTranslator(getResourceAdapterManager());
 		RSpecContents manifestRSpec = translator.getManifestRSpec(resources);
 		String geni_rspec = translator.getRSpecString(manifestRSpec);
 

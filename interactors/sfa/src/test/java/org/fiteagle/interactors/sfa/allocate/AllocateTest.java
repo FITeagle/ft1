@@ -55,7 +55,7 @@ public class AllocateTest {
 		testResourceRSpec = getTestResourceRspec();
 		
 		allocateRequestProcessor = new AllocateRequestProcessor();
-		allocateRequestProcessor.setResourceManager(resourceAdapterManager);
+		allocateRequestProcessor.setResourceAdapterManager(resourceAdapterManager);
 	}
 
 	private void buildMockObjects() {

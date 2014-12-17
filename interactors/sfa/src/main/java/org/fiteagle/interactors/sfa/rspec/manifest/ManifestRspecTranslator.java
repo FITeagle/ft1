@@ -38,8 +38,13 @@ import org.fiteagle.interactors.sfa.rspec.request.NodeContents;
 
 public class ManifestRspecTranslator extends SFAv3RspecTranslator {
 
-	@Inject
-	private ResourceAdapterManager resourceAdapterManager;
+	public ManifestRspecTranslator(ResourceAdapterManager resourceAdapterManager){
+		super(resourceAdapterManager);
+
+	}
+
+
+
 	public RSpecContents getManifestRSpec(List<ResourceAdapter> resourceAdapters) {
 		RSpecContents manifestRspec = getRSpecFromAdapters(resourceAdapters);
 		manifestRspec.setType(RspecTypeContents.MANIFEST);
@@ -61,14 +66,14 @@ public class ManifestRspecTranslator extends SFAv3RspecTranslator {
 				if (nodeId != null) {
 					ArrayList<String> nodeIdAsList = new ArrayList<String>();
 					nodeIdAsList.add(nodeId);
-					List<ResourceAdapter> nodeAdapterAsList = resourceAdapterManager.getResourceAdapterInstancesById(
+					List<ResourceAdapter> nodeAdapterAsList =getResourceAdapterManager().getResourceAdapterInstancesById(
 									nodeIdAsList);
 					NodeAdapterInterface nodeAdapter = (NodeAdapterInterface) nodeAdapterAsList
 							.get(0);
 					resource = translateToOpenstackNode((ResourceAdapter) nodeAdapter);
 
 				} else {
-					resource = new SFAv3RspecTranslator()
+					resource = new SFAv3RspecTranslator(getResourceAdapterManager())
 							.translateToOpenstackResource(resourceAdapter);
 				}
 			}

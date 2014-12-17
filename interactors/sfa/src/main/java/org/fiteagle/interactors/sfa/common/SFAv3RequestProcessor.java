@@ -18,6 +18,7 @@ import org.bouncycastle.jcajce.provider.symmetric.AES.OFB;
 import org.fiteagle.adapter.common.OpenstackResourceAdapter;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.fiteagle.adapter.common.SSHAccessable;
+import org.fiteagle.core.ResourceAdapterManager;
 import org.fiteagle.core.config.InterfaceConfiguration;
 import org.fiteagle.interactors.sfa.rspec.SFAv3RspecTranslator;
 import org.fiteagle.interactors.sfa.rspec.advertisement.RSpecContents;
@@ -28,6 +29,16 @@ public abstract class SFAv3RequestProcessor {
 	public AMCode runTimeReturnCode;
 	public String outPutString = "";
 	private X509Certificate userCertificate;
+
+	public ResourceAdapterManager getResourceAdapterManager() {
+		return resourceAdapterManager;
+	}
+
+	public void setResourceAdapterManager(ResourceAdapterManager resourceAdapterManager) {
+		this.resourceAdapterManager = resourceAdapterManager;
+	}
+
+	private ResourceAdapterManager resourceAdapterManager;
 
 	protected InterfaceConfiguration interfaceConfig = InterfaceConfiguration
 			.getInstance();
@@ -106,7 +117,7 @@ public abstract class SFAv3RequestProcessor {
 
 		List<Object> rspecContentElements = advertisedRspec
 				.getAnyOrNodeOrLink();
-		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
+		SFAv3RspecTranslator translator = new SFAv3RspecTranslator(resourceAdapterManager);
 
 		for (ResourceAdapter resourceAdapter : resourceAdapters) {
 			// TODO: if option available set check the resource adapter
@@ -131,7 +142,7 @@ public abstract class SFAv3RequestProcessor {
 
 		List<Object> rspecContentElements = advertisedRspec
 				.getAnyOrNodeOrLink();
-		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
+		SFAv3RspecTranslator translator = new SFAv3RspecTranslator(resourceAdapterManager);
 
 		for (ResourceAdapter resourceAdapter : resourceAdapters) {
 			Object resource;

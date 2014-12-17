@@ -31,7 +31,6 @@ public class StatusRequestProcessor extends SFAv3RequestProcessor {
 	private StatusOptionsService optionsService;
 	private GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
 	private String output = "";
-	private ResourceAdapterManager resourceAdapterManager;
 
 	public StatusResult processRequest(List<String> urns,
 			ListCredentials credentials, Object... specificArgs) {
@@ -40,9 +39,6 @@ public class StatusRequestProcessor extends SFAv3RequestProcessor {
 		return result;
 	}
 
-	public void setResourceManager(ResourceAdapterManager resourceAdapterManager){
-		this.resourceAdapterManager = resourceAdapterManager;
-	}
 	private StatusResult getResult(List<String> urns,
 			ListCredentials credentials, StatusOptions options) {
 		String value = "";
@@ -82,7 +78,7 @@ public class StatusRequestProcessor extends SFAv3RequestProcessor {
 	private StatusValue getResultStatusValue(List<String> urns) {
 		//TODO: check status also for slivers. call checkStatus on RAs
 
-		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
+		SFAv3RspecTranslator translator = new SFAv3RspecTranslator(getResourceAdapterManager());
 
 		List<URN> urnList = buildURNS(urns);
 		String geni_urn = "";
@@ -105,7 +101,7 @@ public class StatusRequestProcessor extends SFAv3RequestProcessor {
 				List<String> groupResources = g.getResources();
 				slivers = new ArrayList<GeniSlivers>();
 				for (String resourceID : groupResources) {
-					ResourceAdapter ra = resourceAdapterManager
+					ResourceAdapter ra = getResourceAdapterManager()
 							.getResourceAdapterInstance(resourceID);
 					
 					ra.checkStatus();

@@ -47,13 +47,14 @@ public class SFAv3RspecTranslator {
 
 
 	//
-	public SFAv3RspecTranslator() {
+	public SFAv3RspecTranslator(ResourceAdapterManager resourceAdapterManager) {
 		geni_rspec_version = new Geni_RSpec_Version();
 		geni_rspec_version.setType("GENI");
 		geni_rspec_version.setVersion("3");
+		this.resourceAdapterManager = resourceAdapterManager;
 
 	}
-	@Inject
+
 	private ResourceAdapterManager resourceAdapterManager;
 	public String getVersion() {
 		return this.geni_rspec_version.getVersion();
@@ -385,5 +386,13 @@ public Object translateToFITeagleResource(ResourceAdapter resourceAdapter) {
 					.get(OpenstackResourceAdapter.VM_FloatingIP));
 
 		return vm;
+	}
+
+	public ResourceAdapterManager getResourceAdapterManager() {
+		return resourceAdapterManager;
+	}
+
+	public void setResourceAdapterManager(ResourceAdapterManager resourceAdapterManager) {
+		this.resourceAdapterManager = resourceAdapterManager;
 	}
 }

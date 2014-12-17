@@ -91,8 +91,8 @@ public class GetVersionRequestProcessor extends SFAv3RequestProcessor {
 		//Set GENI API
 		value.setGeni_api(GetVersionRequestProcessor.GENI_API_VERSION);
 		//Set GENI request Rspec versions
-		AdvertisementRspecTranslator adTranslator = new AdvertisementRspecTranslator();
-		RequestRspecTranslator requestTranslator = new RequestRspecTranslator();
+		AdvertisementRspecTranslator adTranslator = new AdvertisementRspecTranslator(getResourceAdapterManager());
+		RequestRspecTranslator requestTranslator = new RequestRspecTranslator(getResourceAdapterManager());
 		List<GeniRequestRSpecVersions> geni_request_rspec_versions_list = getGeniRequestRspecVersionsList(requestTranslator);
 		value.setGeni_request_rspec_versions(geni_request_rspec_versions_list);
 		
