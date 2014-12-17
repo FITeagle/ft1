@@ -9,7 +9,6 @@ import org.fiteagle.adapter.common.NodeAdapterInterface;
 import org.fiteagle.adapter.common.OpenstackResourceAdapter;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.fiteagle.core.ResourceAdapterManager;
-import org.fiteagle.core.ResourceAdapterManager.ResourceNotFound;
 import org.fiteagle.core.config.InterfaceConfiguration;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
@@ -90,7 +89,7 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 				String id = resourceAdapter.getId();
 				// String urn = translator.translateResourceIdToSliverUrn(id,
 				// urns.get(0));
-				resourceManager.deleteResource(id);
+				resourceManager.deleteResource(id,group.getGroupId());
 				// delete this from the group
 				// group = GroupDBManager.getInstance().getGroup(
 				// sliceURN.getSubjectAtDomain());
@@ -140,58 +139,58 @@ public class DeleteRequestProcessor extends SFAv3RequestProcessor {
 
 				resourceAdapterInstances.remove(0);
 			}
-
-		} else {
-
-			for (String urn : urns) {
-
-				URN u = new URN(urn);
-				String id = u.getSubject();
-
-				try {
-
-					//Get the node if its openstack
-
-					ArrayList<String> adapterIds = new ArrayList<String>();
-					adapterIds.add(id);
-					List<ResourceAdapter> resAdapterAsList = resourceManager.getResourceAdapterInstancesById(adapterIds);
-
-					if (OpenstackResourceAdapter.class
-							.isAssignableFrom(resAdapterAsList.get(0).getClass())) {
-						OpenstackResourceAdapter openstackAdapter = (OpenstackResourceAdapter) resAdapterAsList.get(0);
-						String nodeId = openstackAdapter.getParentNodeId();
-						if (nodeId != null) {
-							ArrayList<String> nodeIdAsList = new ArrayList<String>();
-							nodeIdAsList.add(nodeId);
-							List<ResourceAdapter> resourceParentNodeAsList = resourceManager
-									.getResourceAdapterInstancesById(nodeIdAsList);
-							NodeAdapterInterface resourceNode = (NodeAdapterInterface) resourceParentNodeAsList
-									.get(0);
-							List<OpenstackResourceAdapter> vms = resourceNode
-									.getVms();
-							vms.remove(openstackAdapter);
-							resourceNode.setVms(vms);
-						}
-					}
-
-					resAdapterAsList.get(0).release();
-					resourceManager.deleteResource(id);
-				} catch (ResourceNotFound e) {
-					code = GENI_CodeEnum.SEARCHFAILED;
-					return new ArrayList<GeniSlivers>();
-				}
-				GeniSlivers tmpSliver = new GeniSlivers();
-
-				tmpSliver.setGeni_sliver_urn(urn);
-				tmpSliver
-						.setGeni_allocation_status(GENISliverAllocationState.geni_unallocated
-								.toString());
-				// tmpSliver.setGeni_expires(geni_expires);
-				slivers.add(tmpSliver);
-
-			}
-
 		}
+//		 else {
+//
+//			for (String urn : urns) {
+//
+//				URN u = new URN(urn);
+//				String id = u.getSubject();
+//
+//				try {
+//
+//					//Get the node if its openstack
+//
+//					ArrayList<String> adapterIds = new ArrayList<String>();
+//					adapterIds.add(id);
+//					List<ResourceAdapter> resAdapterAsList = resourceManager.getResourceAdapterInstancesById(adapterIds);
+//
+//					if (OpenstackResourceAdapter.class
+//							.isAssignableFrom(resAdapterAsList.get(0).getClass())) {
+//						OpenstackResourceAdapter openstackAdapter = (OpenstackResourceAdapter) resAdapterAsList.get(0);
+//						String nodeId = openstackAdapter.getParentNodeId();
+//						if (nodeId != null) {
+//							ArrayList<String> nodeIdAsList = new ArrayList<String>();
+//							nodeIdAsList.add(nodeId);
+//							List<ResourceAdapter> resourceParentNodeAsList = resourceManager
+//									.getResourceAdapterInstancesById(nodeIdAsList);
+//							NodeAdapterInterface resourceNode = (NodeAdapterInterface) resourceParentNodeAsList
+//									.get(0);
+//							List<OpenstackResourceAdapter> vms = resourceNode
+//									.getVms();
+//							vms.remove(openstackAdapter);
+//							resourceNode.setVms(vms);
+//						}
+//					}
+//
+//					resAdapterAsList.get(0).release();
+//					resourceManager.deleteResource(id);
+//				} catch (ResourceNotFound e) {
+//					code = GENI_CodeEnum.SEARCHFAILED;
+//					return new ArrayList<GeniSlivers>();
+//				}
+//				GeniSlivers tmpSliver = new GeniSlivers();
+//
+//				tmpSliver.setGeni_sliver_urn(urn);
+//				tmpSliver
+//						.setGeni_allocation_status(GENISliverAllocationState.geni_unallocated
+//								.toString());
+//				// tmpSliver.setGeni_expires(geni_expires);
+//				slivers.add(tmpSliver);
+//
+//			}
+//
+//		}
 
 		return slivers;
 	}

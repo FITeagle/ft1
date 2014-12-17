@@ -1,5 +1,6 @@
 package org.fiteagle.adapter.lte;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,6 +40,11 @@ public class LteAdapter extends ResourceAdapter implements SSHAccessable{
 	public void release() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void checkStatus() {
+
 	}
 
 	@Override

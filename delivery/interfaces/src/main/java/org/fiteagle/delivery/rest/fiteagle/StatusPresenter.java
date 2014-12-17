@@ -12,7 +12,7 @@ import javax.ws.rs.Produces;
 
 import org.fiteagle.interactors.api.ResourceMonitoringBoundary;
 import org.fiteagle.interactors.monitoring.MonitoringManager;
-import orgt.fiteagle.core.monitoring.StatusTable;
+import org.fiteagle.core.monitoring.StatusTable;
 
 @Path("/v1/status")
 public class StatusPresenter {

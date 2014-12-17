@@ -13,7 +13,7 @@ import org.fiteagle.core.aaa.KeyStoreManagement;
 import org.fiteagle.core.aaa.x509.X509Util;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
-import org.fiteagle.core.groupmanagement.SQLiteGroupDatabase.CouldNotCreateGroup;
+import org.fiteagle.core.groupmanagement.JPAGroupDatabase.CouldNotCreateGroup;
 import org.fiteagle.core.util.URN;
 import org.fiteagle.interactors.sfa.common.AMResult;
 import org.fiteagle.interactors.sfa.common.ListCredentials;

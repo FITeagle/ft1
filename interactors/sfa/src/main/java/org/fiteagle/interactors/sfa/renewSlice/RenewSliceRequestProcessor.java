@@ -21,7 +21,6 @@ import org.fiteagle.core.aaa.KeyStoreManagement;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
 import org.fiteagle.core.util.URN;
 import org.fiteagle.interactors.sfa.common.AMResult;
-import org.fiteagle.interactors.sfa.common.GENI_CodeEnum;
 import org.fiteagle.interactors.sfa.common.ListCredentials;
 import org.fiteagle.interactors.sfa.common.SFAv3RequestProcessor;
 import org.fiteagle.interactors.sfa.getSelfCredential.jaxbClasses.Credential;

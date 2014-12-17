@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
-import org.fiteagle.core.groupmanagement.SQLiteGroupDatabase.CouldNotCreateGroup;
+import org.fiteagle.core.groupmanagement.JPAGroupDatabase.CouldNotCreateGroup;
 import org.fiteagle.core.userdatabase.User;
 import org.fiteagle.core.userdatabase.UserDBManager;
 import org.fiteagle.core.userdatabase.UserPublicKey;
