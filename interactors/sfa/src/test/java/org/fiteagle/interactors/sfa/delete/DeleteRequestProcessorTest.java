@@ -8,7 +8,9 @@ import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.fiteagle.adapter.common.ResourceAdapter;
+import org.fiteagle.adapter.stopwatch.StopwatchAdapter;
 import org.fiteagle.core.ResourceAdapterManager;
+import org.fiteagle.core.ResourceAdapterManager.ResourceNotFound;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
 import org.fiteagle.core.groupmanagement.GroupDBManager.GroupNotFound;
 import org.fiteagle.core.util.URN;

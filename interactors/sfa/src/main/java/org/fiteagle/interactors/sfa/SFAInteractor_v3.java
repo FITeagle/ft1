@@ -50,17 +50,10 @@ import org.fiteagle.interactors.sfa.status.StatusResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-import javax.inject.Inject;
-
-
-
-
 public class SFAInteractor_v3 implements ISFA {
 
-	@Inject
-	private  SFARequestProcessorFactory requestProcessorFactor;
-
+	
+	private final SFARequestProcessorFactory requestProcessorFactor = SFARequestProcessorFactory.getInstance();
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private X509Certificate certificate;
@@ -93,8 +86,8 @@ public class SFAInteractor_v3 implements ISFA {
 	public DescribeResult describe(ArrayList<String> urns, ListCredentials credentials,
 			DescribeOptions describeOptions) throws IOException {
 		
-
-		DescribeRequestProcessor describeRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.DESCRIBE);
+		SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+		DescribeRequestProcessor describeRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.DESCRIBE);
 		DescribeResult result = describeRequestProcessor.processRequest(urns, credentials, describeOptions);
 		
 		return result;
@@ -103,15 +96,15 @@ public class SFAInteractor_v3 implements ISFA {
 
   @Override
   public List<Map<String, Object>> resolve(String urn, String credential) {
-
-    ResolveRequestProcessor process =  requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.RESOLVE);
+    SFARequestProcessorFactory sfaRequestProcessorFactory = new SFARequestProcessorFactory();
+    ResolveRequestProcessor process =  sfaRequestProcessorFactory.createRequestProcessor(SFAv3MethodsEnum.RESOLVE);
     return process.resolve(urn,credential);
   }
 
   @Override
   public String getSelfCredential(String certificate, String xrn, String type) {
-
-	  GetSelfCredentialRequestProcessor getSelfCredentialRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.GET_SELF_CREDENTIAL);
+	  SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+	  GetSelfCredentialRequestProcessor getSelfCredentialRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.GET_SELF_CREDENTIAL);
 	  String result = getSelfCredentialRequestProcessor.processRequest(certificate, xrn, type);
 	  log.debug(result.toString());
 	  return result;
@@ -166,8 +159,8 @@ public class SFAInteractor_v3 implements ISFA {
   
   @Override
   public AllocateResult allocate(String urn, ListCredentials credentials, RSpecContents requestRspec, AllocateOptions allocateOptions) throws IOException {
-
-    AllocateRequestProcessor allocateRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.ALLOCATE);
+    SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    AllocateRequestProcessor allocateRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.ALLOCATE);
     allocateRequestProcessor.setUserCertificate(certificate);
     AllocateResult result = allocateRequestProcessor.processRequest(urn, credentials, requestRspec, allocateOptions);
     return result;
@@ -177,8 +170,8 @@ public class SFAInteractor_v3 implements ISFA {
   @Override
   public ProvisionResult provision(ArrayList<String> urns, ListCredentials credentials, ProvisionOptions provisionOptions) throws IOException {
     
-
-    ProvisionRequestProcessor provisionRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.PROVISION);
+    SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    ProvisionRequestProcessor provisionRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.PROVISION);
     ProvisionResult result = provisionRequestProcessor.processRequest(urns, credentials, provisionOptions);
     return result;
     
@@ -188,8 +181,8 @@ public class SFAInteractor_v3 implements ISFA {
   public StatusResult status(ArrayList<String> urns, ListCredentials credentials,
       StatusOptions statusOptions) throws IOException {
     
-
-    StatusRequestProcessor statusRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.STATUS);
+    SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    StatusRequestProcessor statusRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.STATUS);
     StatusResult result = statusRequestProcessor.processRequest(urns, credentials, statusOptions);
     
     return result;
@@ -199,8 +192,9 @@ public class SFAInteractor_v3 implements ISFA {
   @Override
   public DeleteResult delete(ArrayList<String> urns, ListCredentials credentials,
       DeleteOptions deleteOptions) throws IOException {
-
-    DeleteRequestProcessor deleteRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.DELETE);
+    
+    SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    DeleteRequestProcessor deleteRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.DELETE);
     DeleteResult result = deleteRequestProcessor.processRequest(urns, credentials, deleteOptions);
     
     return result;
@@ -210,8 +204,8 @@ public class SFAInteractor_v3 implements ISFA {
   
   @Override
   public PerformOperationalActionResult performOperationalAction(ArrayList<String> urns, ListCredentials credentials, String action, PerformOperationalActionOptions performOpActionOptions) throws IOException {
-
-    PerformOperationalActionRequestProcessor performOperationalActionProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.PERFORM_OPERATIONAL_ACTION);
+    SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    PerformOperationalActionRequestProcessor performOperationalActionProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.PERFORM_OPERATIONAL_ACTION);
     PerformOperationalActionResult result = performOperationalActionProcessor.processRequest(urns, credentials, action, performOpActionOptions);
     return result;
     
@@ -227,15 +221,15 @@ public class SFAInteractor_v3 implements ISFA {
 
   @Override
   public HashMap<String, Object> register(HashMap<String, Object> registerParameters) {
-
-    RegisterRequestProcessor registerRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.REGISTER);
+    SFARequestProcessorFactory sfaRequestProcessorFactory = new SFARequestProcessorFactory();
+    RegisterRequestProcessor registerRequestProcessor = sfaRequestProcessorFactory.createRequestProcessor(SFAv3MethodsEnum.REGISTER);
     return registerRequestProcessor.register(registerParameters);
   }
 
 @Override
 public HashMap<String, Object> renewSlice(HashMap<String, Object> parameters) throws IOException {
-
-    RenewSliceRequestProcessor renewRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.RENEW_SLICE);
+	SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+    RenewSliceRequestProcessor renewRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.RENEW_SLICE);
     renewRequestProcessor.setUserCertificate(certificate);
     return renewRequestProcessor.renew(parameters);
 }
@@ -244,8 +238,8 @@ public HashMap<String, Object> renewSlice(HashMap<String, Object> parameters) th
 public RenewResult renew(ArrayList<String> urns, ListCredentials credentials, String expirationTime,
     RenewOptions renewOptions) throws IOException {
   
-
-  RenewRequestProcessor renewRequestProcessor = requestProcessorFactor.createRequestProcessor(SFAv3MethodsEnum.RENEW);
+  SFARequestProcessorFactory sfaRequestProcFactory = new SFARequestProcessorFactory();
+  RenewRequestProcessor renewRequestProcessor = sfaRequestProcFactory.createRequestProcessor(SFAv3MethodsEnum.RENEW);
   RenewResult result = renewRequestProcessor.processRequest(urns, expirationTime, credentials, renewOptions);
   
   return result;

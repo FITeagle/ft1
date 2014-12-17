@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.security.cert.X509Certificate;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,25 +33,35 @@ public class FITeagleServlet extends XmlRpcServlet {
 	//TODO make this configurable
 	private final String AM_PATH = "/am/v3";
 	private final String REGISTRY_PATH = "/registry/v1";
-	@Inject
-	private GeniAMHandler sfaHandler;
+	
 
-	@Inject
-	private SFARegistryHandler registryHandler;
+	public FITeagleServlet()  {
 
+		// TODO: choose dependency injection here (i.e. add a parameter to
+		// define the interactor here, use reflection to find one or use
+		// a config file)
+	  
+		this.server = new FixedXmlRpcServer();
+		this.server.setSerializer(new FixedSerializer());
+		
+		final XmlRpcInvocationHandler sfaHandler = new GeniAMHandler();
+		
+		this.server.addInvocationHandler(AM_PATH, sfaHandler);
+		
+		final XmlRpcInvocationHandler registryHandler = new SFARegistryHandler();
+		this.server.addInvocationHandler(REGISTRY_PATH, registryHandler);
+
+		XmlRpcController controller = new XmlRpcController();
+		this.server.addInvocationInterceptor(controller);	
+	
+	
+	}
 
 	@Override
 	public void init(final ServletConfig servletConfig) throws ServletException {
-		this.server = new FixedXmlRpcServer();
-		this.server.setSerializer(new FixedSerializer());
-		this.server.addInvocationHandler(AM_PATH, sfaHandler);
-		this.server.addInvocationHandler(REGISTRY_PATH, registryHandler);
-		XmlRpcController controller = new XmlRpcController();
-		this.server.addInvocationInterceptor(controller);
 		super.init(servletConfig);
 
 	}
-
 
 	@Override
 	public void doPost(final HttpServletRequest req,

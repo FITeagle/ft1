@@ -41,10 +41,8 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 	AMCode returnCode = null;
 
 	public DescribeRequestProcessor() {
-
+		resourceManager = ResourceAdapterManager.getInstance();
 	}
-
-
 
 	public DescribeResult processRequest(List<String> urns,
 			ListCredentials credentials, Object... specificArgs) {
@@ -53,9 +51,6 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 		return result;
 	}
 
-	public void setResourceManager(ResourceAdapterManager resourceManager){
-		this.resourceManager = resourceManager;
-	}
 	private DescribeResult getResult(List<String> urns,
 			ListCredentials credentials, DescribeOptions options) {
 		String value = "";
@@ -106,7 +101,8 @@ public class DescribeRequestProcessor extends SFAv3RequestProcessor {
 		List<ResourceAdapter> resources = null;
 		
 		if (urnList.size() == 1	&& urnList.get(0).getType().equalsIgnoreCase("slice")) {
-
+			ResourceAdapterManager resourceManager = ResourceAdapterManager
+					.getInstance();
 			//TODO: if group does not exist => set in output the error??
 			
 			

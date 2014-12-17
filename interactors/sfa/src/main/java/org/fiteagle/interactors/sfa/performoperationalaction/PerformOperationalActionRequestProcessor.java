@@ -38,8 +38,6 @@ public class PerformOperationalActionRequestProcessor extends
 	Logger log = LoggerFactory.getLogger(getClass());
 	GENI_CodeEnum code = GENI_CodeEnum.SUCCESS;
 
-	ResourceAdapterManager resourceAdapterManager= null;
-
 	public PerformOperationalActionResult processRequest(
 			ArrayList<String> urns, ListCredentials credentials, String action,
 			PerformOperationalActionOptions performOpOptions) {
@@ -48,9 +46,6 @@ public class PerformOperationalActionRequestProcessor extends
 		return result;
 	}
 
-	public void setResourceManager(ResourceAdapterManager resourceAdapterManager){
-		this.resourceAdapterManager = resourceAdapterManager;
-	}
 	private PerformOperationalActionResult getResult(ArrayList<String> urns,
 			ListCredentials credentials, String action,
 			PerformOperationalActionOptions performOpOptions) {
@@ -86,7 +81,8 @@ public class PerformOperationalActionRequestProcessor extends
 			throw new RuntimeException();
 
 		SFAv3RspecTranslator translator = new SFAv3RspecTranslator();
-
+		ResourceAdapterManager resourceManager = ResourceAdapterManager
+				.getInstance();
 		ArrayList<GeniSliversOperationalStatus> slivers = new ArrayList<GeniSliversOperationalStatus>();
 		
 		
@@ -95,7 +91,8 @@ public class PerformOperationalActionRequestProcessor extends
 			Group group = GroupDBManager.getInstance().getGroup(
 					new URN(urns.get(0)).getSubjectAtDomain());
 			List<String> resourceAdapterInstanceIds = group.getResources();
-			List<ResourceAdapter> resourceAdapterInstances = resourceAdapterManager.getResourceAdapterInstancesById(resourceAdapterInstanceIds);
+			List<ResourceAdapter> resourceAdapterInstances = resourceManager
+					.getResourceAdapterInstancesById(resourceAdapterInstanceIds);
 
 			for (Iterator iterator = resourceAdapterInstances.iterator(); iterator
 					.hasNext();) {
@@ -184,7 +181,8 @@ public class PerformOperationalActionRequestProcessor extends
 				URN u = new URN(urn);
 				String id = u.getSubject();
 
-				ResourceAdapter resourceAdapter = resourceAdapterManager.getResourceAdapterInstance(id);
+				ResourceAdapter resourceAdapter = resourceManager
+						.getResourceAdapterInstance(id);
 				performActionOnAdapter(action, resourceAdapter);
 				if (isStillSuccessfull()) {
 

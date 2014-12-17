@@ -19,8 +19,6 @@ public class GroupDBManager {
   private Logger log = LoggerFactory.getLogger(getClass());
   
   private static enum databaseType {
-	  
-	  
     InMemory, Persistant
   }
   private static final String DEFAULT_DATABASE_TYPE = databaseType.Persistant.name();

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fiteagle.adapter.common.ResourceAdapter;
+import org.fiteagle.core.ResourceAdapterManager.ResourceNotFound;
 
 public class InMemoryResourceAdapterDatabase implements ResourceAdapterDatabase {
 
@@ -23,9 +24,8 @@ public class InMemoryResourceAdapterDatabase implements ResourceAdapterDatabase 
 			return adapterMap.get(resourceAdapterId);
 		}
 		else{
-//			throw new ResourceNotFound();
+			throw new ResourceNotFound();
 		}
-		return null;
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class InMemoryResourceAdapterDatabase implements ResourceAdapterDatabase 
 		if(adapterMap.containsKey(resourceAdapterId)){
 			adapterMap.remove(resourceAdapterId);
 		}else{
-//			throw new ResourceNotFound();
+			throw new ResourceNotFound();
 		}
 	}
 

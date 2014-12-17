@@ -11,6 +11,7 @@ import java.util.List;
 import org.easymock.EasyMock;
 import org.fiteagle.adapter.common.ResourceAdapter;
 import org.fiteagle.adapter.common.ResourceAdapterStatus;
+import org.fiteagle.adapter.stopwatch.StopwatchAdapter;
 import org.fiteagle.core.ResourceAdapterManager;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
@@ -54,21 +55,21 @@ public class ProvisionRequestProcessorTest {
 	}
 
 	private void buildMocks() {
-//
-//		resourceAdapterManager = EasyMock.createMock(ResourceAdapterManager.class);
-//		ResourceAdapter adapter = new StopwatchAdapter();
-//		adapter.setExclusive(true);
-//		Date allocationExpirationTime = Calendar.getInstance().getTime();
-//		allocationExpirationTime.setTime(allocationExpirationTime.getTime() + 1 * 1000 * 60);
-//		adapter.setExpirationTime(allocationExpirationTime);
-//		adapter.setStatus(ResourceAdapterStatus.Reserved);
-//		List<ResourceAdapter> resourceAdapters = new LinkedList<>();
-//		resourceAdapters.add(adapter);
-//		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstancesById((List<String>) EasyMock.anyObject())).andReturn(resourceAdapters);
-//		EasyMock.expectLastCall().anyTimes();
-//		resourceAdapterManager.renewExpirationTime(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class));
-//		EasyMock.replay(resourceAdapterManager);
-//
+		
+		resourceAdapterManager = EasyMock.createMock(ResourceAdapterManager.class);
+		ResourceAdapter adapter = new StopwatchAdapter();
+		adapter.setExclusive(true);
+		Date allocationExpirationTime = Calendar.getInstance().getTime();
+		allocationExpirationTime.setTime(allocationExpirationTime.getTime() + 1 * 1000 * 60);
+		adapter.setExpirationTime(allocationExpirationTime);
+		adapter.setStatus(ResourceAdapterStatus.Reserved);
+		List<ResourceAdapter> resourceAdapters = new LinkedList<>();
+		resourceAdapters.add(adapter);
+		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstancesById((List<String>) EasyMock.anyObject())).andReturn(resourceAdapters);
+		EasyMock.expectLastCall().anyTimes();
+		resourceAdapterManager.renewExpirationTime(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class));
+		EasyMock.replay(resourceAdapterManager);
+		
 	}
 
 	@After

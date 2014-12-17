@@ -15,20 +15,21 @@ import org.fiteagle.interactors.sfa.getSelfCredential.jaxbClasses.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-@ApplicationScoped
 public class SFARegistryHandler extends SFAHandler {
   
 Logger log =  LoggerFactory.getLogger(this.getClass());
 
-    @Inject
-    SFAInteractor_v3 interactor;
+//	public SFARegistryHandler(ISFA interactor){
+//		this.interactor = interactor;
+//	}
+
+public SFARegistryHandler(){
+}
+	
 	
 	@Override
 	public Object invoke(String methodName, List arguments) throws Throwable {
-
+	  SFAInteractor_v3 interactor = new SFAInteractor_v3();
     setInteractor(interactor);
 
 		Method calledMethod = getMethod(methodName,arguments);
@@ -56,7 +57,7 @@ Logger log =  LoggerFactory.getLogger(this.getClass());
 
   @Override
   public Object invoke(String methodName, List arguments, X509Certificate certificate) throws Throwable {
-
+    SFAInteractor_v3 interactor = new SFAInteractor_v3();
     interactor.setCertificate(certificate);
     setInteractor(interactor);
 
