@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -41,21 +43,20 @@ import org.slf4j.Logger;
 
 import redstone.xmlrpc.XmlRpcArray;
 import redstone.xmlrpc.XmlRpcStruct;
-
+@ApplicationScoped
 public class GeniAMHandler extends SFAHandler {
 
-  ISFA interactor;
 
   private final Logger log = org.slf4j.LoggerFactory.getLogger(this.getClass());
 
-  
-public GeniAMHandler() {
-}
+  @Inject
+  SFAInteractor_v3 interactor;
 
   @SuppressWarnings("rawtypes")
   @Override
+
   public Object invoke(String methodName, List parameters) throws Throwable {
-    SFAInteractor_v3 interactor = new SFAInteractor_v3();
+
     setInteractor(interactor);
     
   Object response = null;
@@ -105,7 +106,7 @@ public GeniAMHandler() {
   
   @Override
   public Object invoke(String methodName, List arguments, X509Certificate certificate) throws Throwable {
-    SFAInteractor_v3 interactor = new SFAInteractor_v3();
+
     interactor.setCertificate(certificate);
     setInteractor(interactor);
     
@@ -419,7 +420,7 @@ private Object parseDeleteOptions(Object from) {
   }
 
 
-  private class ParsingException extends RuntimeException {
+  public class ParsingException extends RuntimeException {
     private GENI_CodeEnum errorCode = GENI_CodeEnum.ERROR;
     private String errorMessage = "Error";
     private static final long serialVersionUID = 1L;
@@ -440,12 +441,12 @@ private Object parseDeleteOptions(Object from) {
     }
   }
 
-  private class CredentialsNotValid extends ParsingException {
+  public class CredentialsNotValid extends ParsingException {
 
     private static final long serialVersionUID = 1L;
     public CredentialsNotValid() {
-      setErrorCode(GENI_CodeEnum.BADARGS);
-      setMessage("Credentials not Valid");
+      this.setErrorCode(GENI_CodeEnum.BADARGS);
+      this.setMessage("Credentials not Valid");
     }
 
 

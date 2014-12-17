@@ -8,6 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -31,8 +35,11 @@ import org.fiteagle.interactors.sfa.rspec.ext.Property;
 import org.fiteagle.interactors.sfa.rspec.ext.Resource;
 import org.fiteagle.interactors.sfa.rspec.request.NodeContents;
 
+
 public class ManifestRspecTranslator extends SFAv3RspecTranslator {
 
+	@Inject
+	private ResourceAdapterManager resourceAdapterManager;
 	public RSpecContents getManifestRSpec(List<ResourceAdapter> resourceAdapters) {
 		RSpecContents manifestRspec = getRSpecFromAdapters(resourceAdapters);
 		manifestRspec.setType(RspecTypeContents.MANIFEST);
@@ -54,8 +61,7 @@ public class ManifestRspecTranslator extends SFAv3RspecTranslator {
 				if (nodeId != null) {
 					ArrayList<String> nodeIdAsList = new ArrayList<String>();
 					nodeIdAsList.add(nodeId);
-					List<ResourceAdapter> nodeAdapterAsList = ResourceAdapterManager
-							.getInstance().getResourceAdapterInstancesById(
+					List<ResourceAdapter> nodeAdapterAsList = resourceAdapterManager.getResourceAdapterInstancesById(
 									nodeIdAsList);
 					NodeAdapterInterface nodeAdapter = (NodeAdapterInterface) nodeAdapterAsList
 							.get(0);
