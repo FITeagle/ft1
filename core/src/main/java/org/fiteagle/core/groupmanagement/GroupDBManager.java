@@ -74,8 +74,10 @@ public static class GroupNotFound extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public GroupNotFound(String message) {
-		super(message);
+	public GroupNotFound() {
+
+        super("The Asked Group could not be found. It doesn't exist");
+
 	}
 
 }

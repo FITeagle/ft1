@@ -83,7 +83,7 @@ public class JPAGroupDatabase implements
 			getEntityManager();
 				Group group = manager.find(Group.class, groupId);
 				if(group == null){
-			        throw new GroupNotFoundException();
+			        throw new GroupDBManager.GroupNotFound();
 			      }
 				beginTransaction(manager);
 				List<String> resources = group.getResources();
@@ -97,7 +97,7 @@ public class JPAGroupDatabase implements
 			getEntityManager();
 			Group group = manager.find(Group.class, groupId);
 			if(group == null){
-		        throw new GroupNotFoundException();
+		        throw new GroupDBManager.GroupNotFound();
 		      }
 				return group;
 		}
@@ -106,7 +106,7 @@ public class JPAGroupDatabase implements
 		public void deleteGroup(String groupId)  {
 			getEntityManager();
 			if((manager.find(Group.class, groupId)) == null){
-		        throw new GroupNotFoundException();
+		        throw new GroupDBManager.GroupNotFound();
 		      }
 			else manager.remove(manager.find(Group.class, groupId));
 
@@ -152,13 +152,7 @@ public class JPAGroupDatabase implements
 		      super("another group with the same groupId already exists in the database");
 		    }
 		  }
-	  public static class GroupNotFoundException extends RuntimeException {
-		    private static final long serialVersionUID = -7242105025265481123L;   
-		    
-		    public GroupNotFoundException(){
-		      super("The Asked Group could not be found. It don't exist");
-		    }
-		  }
+
 	  
 
 //	public JPAGroupDatabase() throws SQLException {

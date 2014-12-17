@@ -65,7 +65,7 @@ public class DeleteRequestProcessorTest {
 	public void testProcessRequestOnNotExistingSlice() {
 		List<String> urns = new LinkedList<>();
 		setUpCredentialMock();
-		EasyMock.expect(groupManager.getGroup((String) EasyMock.anyObject())).andThrow(new GroupNotFound(""));
+		EasyMock.expect(groupManager.getGroup((String) EasyMock.anyObject())).andThrow(new GroupNotFound());
 	
 		EasyMock.replay(groupManager);
 		urns.add(sliceUrn.toString());
