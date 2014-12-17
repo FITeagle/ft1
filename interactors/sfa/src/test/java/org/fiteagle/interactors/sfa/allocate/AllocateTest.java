@@ -13,7 +13,6 @@ import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.fiteagle.adapter.common.ResourceAdapter;
-import org.fiteagle.adapter.stopwatch.StopwatchAdapter;
 import org.fiteagle.core.ResourceAdapterManager;
 import org.fiteagle.core.groupmanagement.Group;
 import org.fiteagle.core.groupmanagement.GroupDBManager;
@@ -60,30 +59,30 @@ public class AllocateTest {
 	}
 
 	private void buildMockObjects() {
-		node = EasyMock.createMock(RSpecContents.class);
-		resourceAdapterManager = EasyMock.createMock(ResourceAdapterManager.class);
-		resourceAdapterManager.addResourceAdapterInstance((ResourceAdapter) EasyMock.anyObject());
-		EasyMock.expectLastCall();
-		ResourceAdapter adapter = new StopwatchAdapter();
-		adapter.setExclusive(true);
-		Date allocationExpirationTime = Calendar.getInstance().getTime();
-		allocationExpirationTime
-				.setTime(allocationExpirationTime.getTime() + 1 * 1000 * 60);
-		adapter.setExpirationTime(allocationExpirationTime);
-		List<ResourceAdapter> resourceAdapters = new LinkedList<>();
-		resourceAdapters.add(adapter);
-		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstancesById((List<String>) EasyMock.anyObject())).andReturn(resourceAdapters);
-		EasyMock.expectLastCall().anyTimes();
-//
-		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstance("componentID")).andReturn(resourceAdapters.get(0));
-		EasyMock.expectLastCall().anyTimes();
-//		
-		resourceAdapterManager.setExpires(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class));
-		EasyMock.expectLastCall().anyTimes();
-//	
-//		
-//		
-		EasyMock.replay(resourceAdapterManager);
+//		node = EasyMock.createMock(RSpecContents.class);
+//		resourceAdapterManager = EasyMock.createMock(ResourceAdapterManager.class);
+//		resourceAdapterManager.addResourceAdapterInstance((ResourceAdapter) EasyMock.anyObject());
+//		EasyMock.expectLastCall();
+//		ResourceAdapter adapter = new StopwatchAdapter();
+//		adapter.setExclusive(true);
+//		Date allocationExpirationTime = Calendar.getInstance().getTime();
+//		allocationExpirationTime
+//				.setTime(allocationExpirationTime.getTime() + 1 * 1000 * 60);
+//		adapter.setExpirationTime(allocationExpirationTime);
+//		List<ResourceAdapter> resourceAdapters = new LinkedList<>();
+//		resourceAdapters.add(adapter);
+//		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstancesById((List<String>) EasyMock.anyObject())).andReturn(resourceAdapters);
+//		EasyMock.expectLastCall().anyTimes();
+////
+//		EasyMock.expect(resourceAdapterManager.getResourceAdapterInstance("componentID")).andReturn(resourceAdapters.get(0));
+//		EasyMock.expectLastCall().anyTimes();
+////
+//		resourceAdapterManager.setExpires(EasyMock.anyObject(String.class), EasyMock.anyObject(Date.class));
+//		EasyMock.expectLastCall().anyTimes();
+////
+////
+////
+//		EasyMock.replay(resourceAdapterManager);
 		
 	}
 

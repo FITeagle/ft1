@@ -14,19 +14,16 @@ import org.fiteagle.interactors.sfa.common.SFAv3RequestProcessor;
 import org.fiteagle.interactors.sfa.rspec.advertisement.AdvertisementRspecTranslator;
 import org.fiteagle.interactors.sfa.rspec.advertisement.RSpecContents;
 
-public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
 
+public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
 	private ResourceAdapterManager resourceManager;
 	private ListResourceOptionsService optionsService;
 
-	public ListResourceRequestProcessor() {
-		resourceManager = ResourceAdapterManager.getInstance();
-	}
 
 	@Override
 	public ListResourcesResult processRequest(ListCredentials credentials,
 			Object... specificArgs) {
-		resourceManager = ResourceAdapterManager.getInstance();
+
 
 		ListResourceOptions options = (ListResourceOptions) specificArgs[0];
 		// has to be modified to check credentials
@@ -35,6 +32,9 @@ public class ListResourceRequestProcessor extends SFAv3RequestProcessor {
 
 	}
 
+	public void setResourceManager(ResourceAdapterManager resourceManager){
+		this.resourceManager = resourceManager;
+	}
 	private ListResourcesResult getResult(ListCredentials listCredentials,
 			ListResourceOptions options) {
 

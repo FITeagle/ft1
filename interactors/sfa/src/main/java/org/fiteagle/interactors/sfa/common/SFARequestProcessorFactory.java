@@ -17,13 +17,21 @@ import org.fiteagle.interactors.sfa.renewSlice.RenewSliceRequestProcessor;
 import org.fiteagle.interactors.sfa.resolve.ResolveRequestProcessor;
 import org.fiteagle.interactors.sfa.status.StatusRequestProcessor;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+
+
 public class SFARequestProcessorFactory {
 
-	private static SFARequestProcessorFactory factory = new SFARequestProcessorFactory();
 
-	public static SFARequestProcessorFactory getInstance() {
-		return factory;
-	}
+	@Inject
+	ResourceAdapterManager resourceAdapterManager;
+
+
 
 	@SuppressWarnings("unchecked")
 	public <E extends SFAv3RequestProcessor> E createRequestProcessor(
@@ -33,40 +41,44 @@ public class SFARequestProcessorFactory {
 		switch (method) {
 		case ALLOCATE:
 			AllocateRequestProcessor allocateRequestProcessor = new AllocateRequestProcessor();
-			allocateRequestProcessor.setResourceManager(ResourceAdapterManager
-					.getInstance());
+			allocateRequestProcessor.setResourceManager(resourceAdapterManager);
 			result = (E) allocateRequestProcessor;
 
 			break;
 		case DELETE:
 			DeleteRequestProcessor delProc = new DeleteRequestProcessor();
-			delProc.setResourceManager(ResourceAdapterManager.getInstance());
+			delProc.setResourceManager(resourceAdapterManager);
 			delProc.setGroupDBManager(GroupDBManager.getInstance());
 			result = (E) delProc;
 			break;
 		case DESCRIBE:
-			result = (E) new DescribeRequestProcessor();
+			DescribeRequestProcessor describeRequestProcessor = new DescribeRequestProcessor();
+			describeRequestProcessor.setResourceManager(resourceAdapterManager);
+			result = (E) describeRequestProcessor;
 			break;
 		case LIST_RESOURCES:
-			result = (E) new ListResourceRequestProcessor();
+			ListResourceRequestProcessor listResourceRequestProcessor = new ListResourceRequestProcessor();
+			listResourceRequestProcessor.setResourceManager(resourceAdapterManager);
+			result = (E) listResourceRequestProcessor;
 			break;
 		case PERFORM_OPERATIONAL_ACTION:
-			result = (E) new PerformOperationalActionRequestProcessor();
+			PerformOperationalActionRequestProcessor performOperationalActionRequestProcessor = new PerformOperationalActionRequestProcessor();
+			performOperationalActionRequestProcessor.setResourceManager(resourceAdapterManager);
+			result = (E) performOperationalActionRequestProcessor;
 			break;
 		case PROVISION:
 			ProvisionRequestProcessor provisionRequestProcessor = new ProvisionRequestProcessor();
-			provisionRequestProcessor.setResourceManager(ResourceAdapterManager
-					.getInstance());
+			provisionRequestProcessor.setResourceManager(resourceAdapterManager);
 			result = (E) provisionRequestProcessor;
 			break;
 		case RENEW_SLICE:
 			RenewSliceRequestProcessor renewSliceRequestProcessor = new RenewSliceRequestProcessor(KeyStoreManagement.getInstance(), GroupDBManager.getInstance());
-			renewSliceRequestProcessor.setResourceManager(ResourceAdapterManager.getInstance());
+			renewSliceRequestProcessor.setResourceManager(resourceAdapterManager);
 			result = (E) renewSliceRequestProcessor;
 			break;
 		case RENEW:
 //			RenewRequestProcessor renewRequestProcessor = new RenewSliceRequestProcessor(KeyStoreManagement.getInstance(), GroupDBManager.getInstance());
-			RenewRequestProcessor renewRequestProcessor = new RenewRequestProcessor(ResourceAdapterManager.getInstance(), GroupDBManager.getInstance());
+			RenewRequestProcessor renewRequestProcessor = new RenewRequestProcessor(resourceAdapterManager, GroupDBManager.getInstance());
 			result = (E) renewRequestProcessor;
 			break;
 		case SHUTDOWN:
@@ -75,7 +87,9 @@ public class SFARequestProcessorFactory {
 			result = (E) new GetSelfCredentialRequestProcessor();
 			break;
 		case STATUS:
-			result = (E) new StatusRequestProcessor();
+			StatusRequestProcessor statusRequestProcessor = new StatusRequestProcessor();
+			statusRequestProcessor.setResourceManager(resourceAdapterManager);
+			result = (E) statusRequestProcessor;
 			break;
 		case GET_VERSION:
 			result = (E) new GetVersionRequestProcessor();

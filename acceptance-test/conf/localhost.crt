@@ -1,23 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<authorities xmlns="http://jfed.iminds.be/authority">
-    <authority>
-        <urn>urn:publicid:IDN+localhost+authority+root</urn>
-        <hrn>localhost</hrn>
-        <urls>
-            <serverurl>
-                <servertype role="Slice Authority" version="1"/>
-                <url>https://localhost:8443/ft1/api/sfa/registry/v1</url>
-            </serverurl>
-            <serverurl>
-                <servertype role="Aggregate Manager" version="3"/>
-                <url>https://localhost:8443/ft1/api/sfa/am/v3</url>
-            </serverurl>
-        </urls>
-        <proxies/>
-        <type></type>
-        <source>User</source>
-        <reconnectEachTime>false</reconnectEachTime>
-        <pemSslTrustCert>-----BEGIN CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
 MIIDnzCCAoegAwIBAgIJAM0xRhVEXJc3MA0GCSqGSIb3DQEBBQUAMHIxCzAJBgNV
 BAYTAkRFMQ8wDQYDVQQIEwZCZXJsaW4xDzANBgNVBAcTBkJlcmxpbjEMMAoGA1UE
 ChMDVFVCMRIwEAYDVQQDEwlsb2NhbGhvc3QxHzAdBgkqhkiG9w0BCQEWEHRlc3RA
@@ -39,9 +20,3 @@ hBnCZWM+Mmq2AdhgsiyUfD61vr2uqmADAKi/I1O8HuH/mBlv81ZPQb/IpaiM0huu
 g4ISD4J4guxtM/CoQSeAxbsTqVl9OpMLNl2Q2LJLx5goEBgI41hZ8aSFMZHh5YOq
 ekzD3c075V+vDVOqabtw4KXgYQ==
 -----END CERTIFICATE-----
-</pemSslTrustCert>
-        <allowedCertificateHostnameAliases>
-            <alias>localhost</alias>
-        </allowedCertificateHostnameAliases>
-    </authority>
-</authorities>
