@@ -109,7 +109,11 @@ public class PhysicalNodeAdapter extends ResourceAdapter implements
 			
 			setUtilsConfigured(true);
 		} else {
-			preferences.put("node_names", "Please add node names (node_name property) as java preferences. You can allso add properties like \"root_user_names\" \"nodes_passwords\" \"nodes_ips\" \"nodes_ports\"  ( all seperated by comma)");
+			preferences.put("node_names", "pc");
+			preferences.put("node_ips", "localhost");
+			preferences.put("node_ports", "22");
+			preferences.put("root_user_names", "root");
+			preferences.put("node_passwords", "SET_ME");
 		}
 		
 	}
