@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+cd ${_DIR}
+
 _version="gcf-2.7"
 _url="http://software.geni.net/local-sw/real_download"
 _data="software=${_version}.tar.gz&accept=I+have+read+and+accept+the+GPO+terms+of+service+and+disclaimer"
