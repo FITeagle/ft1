@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.validation.constraints.NotNull;
 
 public class JPAGroupDatabase implements
 		GroupPersistable {
@@ -54,25 +55,27 @@ public class JPAGroupDatabase implements
 	  @Override
 	public void addGroup(Group group){
 		  getEntityManager();
-//	  List<Group> groups = getGroups();
-//	  for (Group g : groups) {
-//	      if (g.getGroupId().equals(group.getGroupId())) {
-//	        throw new DuplicateGroupIdException();
-//	      }
-//	    }
+	  List<Group> groups = getGroups();
+	  for (Group g : groups) {
+	      if (g.getGroupId().equals(group.getGroupId())) {
+	        throw new DuplicateGroupIdException();
+	      }
+	    }
 
 	      beginTransaction(manager);
 	      manager.persist(group);
 	      commitTransaction(manager);
 	  }
 	  
-//	  public List<Group> getGroups(){
-//		      Query query = manager.createQuery("SELECT g FROM Group g");
-//		      @SuppressWarnings("unchecked")
-//			List<Group> resultList = (List<Group>) query.getResultList();
-//		      return resultList;
-//		  }
+	  public List<Group> getGroups(){
+		  	Query query = manager.createQuery("SELECT g FROM Group g");
+		      @SuppressWarnings("unchecked")
+			List<Group> resultList = (List<Group>) query.getResultList();
+		      return resultList;
+		  }
 	  
+	  
+	  //TODO Wieso existieren diese beiden methoden? sie sind private,werden nirgends genutzt und von außen nicht zugreifbar(fehlen im Interface)?!
 		private void addResources(Group group) {
 			for (String resourceId : group.getResources()) {
 					addResource(group.getGroupId(), resourceId);
@@ -111,7 +114,7 @@ public class JPAGroupDatabase implements
 			else manager.remove(manager.find(Group.class, groupId));
 
 			
-			deleteAllResourcesFromSingleGroup(groupId);
+//			deleteAllResourcesFromSingleGroup(groupId);
 		}
 		
 		
@@ -155,201 +158,203 @@ public class JPAGroupDatabase implements
 
 	  
 
-//	public JPAGroupDatabase() throws SQLException {
-//		Connection connection = getConnection();
-//		try {
-//			createTable(connection,
-//					"CREATE TABLE IF NOT EXISTS Groups (groupId, ownerId, PRIMARY KEY(groupId))");
-//			createTable(
-//					connection,
-//					"CREATE TABLE IF NOT EXISTS Resources (id INTEGER PRIMARY KEY AUTOINCREMENT,resourceId,groupId)");
-//		} finally {
-//			connection.close();
-//		}
-//	}
+/**
+	public JPAGroupDatabase() throws SQLException {
+		Connection connection = getConnection();
+		try {
+			createTable(connection,
+					"CREATE TABLE IF NOT EXISTS Groups (groupId, ownerId, PRIMARY KEY(groupId))");
+			createTable(
+					connection,
+					"CREATE TABLE IF NOT EXISTS Resources (id INTEGER PRIMARY KEY AUTOINCREMENT,resourceId,groupId)");
+		} finally {
+			connection.close();
+		}
+	}
 	
 	
 
-//	@Override
-//	public void addGroup(Group group) throws SQLException {
-//		PreparedStatement ps = null;
-//		Connection connection = getConnection();
-//		try {
-//
-//			ps = connection.prepareStatement("INSERT INTO Groups VALUES(?,?)");
-//
-//			ps.setString(1, group.getGroupId());
-//			ps.setString(2, group.getGroupOwnerId());
-//
-//			ps.execute();
-//			connection.commit();
-//			connection.close();
-//		} catch (SQLException e) {
-//			log.error(e.getMessage(), e);
-//			throw new CouldNotCreateGroup();
-//		} finally {
-//			connection.close();
-//			try {
-//				ps.close();
-//			} catch (SQLException e) {
-//				throw new RuntimeException(e);
-//			}
-//		}
-//
-//		addResources(group);
-//
-//	}
+	@Override
+	public void addGroup(Group group) throws SQLException {
+		PreparedStatement ps = null;
+		Connection connection = getConnection();
+		try {
 
-//	private void addResources(Group group) {
-//		for (String resourceId : group.getResources()) {
-//			try {
-//				addResource(group.getGroupId(), resourceId);
-//			} catch (SQLException e) {
-//				log.error(e.getMessage(), e);
-//				throw new RuntimeException();
-//			}
-//		}
-//	}
+			ps = connection.prepareStatement("INSERT INTO Groups VALUES(?,?)");
 
-//	private void addResource(String groupId, String resourceId)
-//			throws SQLException {
-//		PreparedStatement ps = null;
-//		Connection connection = getConnection();
-//		try {
-//
-//			ps = connection
-//					.prepareStatement("INSERT INTO Resources(id,resourceId,groupId) VALUES($next_id,?,?)");
-//			ps.setString(2, resourceId);
-//			ps.setString(3, groupId);
-//			ps.execute();
-//			connection.commit();
-//			
-//		} catch (SQLException e) {
-//			log.error(e.getMessage(), e);
-//			throw new RuntimeException("could not add resource");
-//		} finally {
-//			connection.close();
-//			ps.close();
-//
-//		}
-//	}
+			ps.setString(1, group.getGroupId());
+			ps.setString(2, group.getGroupOwnerId());
 
-//	@Override
-//	public Group getGroup(String groupId) throws SQLException {
-//		Group g = null;
-//		Connection connection = getConnection();
-//		try {
-//			
-//			PreparedStatement ps = connection
-//					.prepareStatement("SELECT Groups.groupId, Groups.ownerId, Resources.resourceId FROM Groups LEFT OUTER JOIN Resources ON Groups.groupId=Resources.groupId WHERE Groups.groupId = ? ");
-//			ps.setString(1, groupId);
-//			ResultSet result = ps.executeQuery();
-//			
-//			if (result.next()) {
-//				g = evaluateResultSet(result);
-//				connection.commit();
-//				
-//			}else{
-//				throw new GroupNotFound(groupId);
-//			}
-//		}catch(SQLException e){
-//			throw new GroupNotFound("Group not found");
-//		}finally{
-//			connection.close();
-//		}
-//	
-//			return g;
-//	}
+			ps.execute();
+			connection.commit();
+			connection.close();
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new CouldNotCreateGroup();
+		} finally {
+			connection.close();
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		addResources(group);
+
+	}
+
+	private void addResources(Group group) {
+		for (String resourceId : group.getResources()) {
+			try {
+				addResource(group.getGroupId(), resourceId);
+			} catch (SQLException e) {
+				log.error(e.getMessage(), e);
+				throw new RuntimeException();
+			}
+		}
+	}
+
+	private void addResource(String groupId, String resourceId)
+			throws SQLException {
+		PreparedStatement ps = null;
+		Connection connection = getConnection();
+		try {
+
+			ps = connection
+					.prepareStatement("INSERT INTO Resources(id,resourceId,groupId) VALUES($next_id,?,?)");
+			ps.setString(2, resourceId);
+			ps.setString(3, groupId);
+			ps.execute();
+			connection.commit();
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new RuntimeException("could not add resource");
+		} finally {
+			connection.close();
+			ps.close();
+
+		}
+	}
+
+	@Override
+	public Group getGroup(String groupId) throws SQLException {
+		Group g = null;
+		Connection connection = getConnection();
+		try {
+			
+			PreparedStatement ps = connection
+					.prepareStatement("SELECT Groups.groupId, Groups.ownerId, Resources.resourceId FROM Groups LEFT OUTER JOIN Resources ON Groups.groupId=Resources.groupId WHERE Groups.groupId = ? ");
+			ps.setString(1, groupId);
+			ResultSet result = ps.executeQuery();
+			
+			if (result.next()) {
+				g = evaluateResultSet(result);
+				connection.commit();
+				
+			}else{
+				throw new GroupNotFound(groupId);
+			}
+		}catch(SQLException e){
+			throw new GroupNotFound("Group not found");
+		}finally{
+			connection.close();
+		}
+	
+			return g;
+	}
 
 
-//	@Override
-//	public List<Group> getGroups() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public List<Group> getGroups() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-//	@Override
-//	public void deleteGroup(String groupId) throws SQLException {
-//		Connection connection = getConnection();
-//		try {
-//
-//			
-//			PreparedStatement ps = connection
-//					.prepareStatement("DELETE FROM Groups WHERE Groups.groupId = ?");
-//			ps.setString(1, groupId);
-//			ps.execute();
-//			connection.commit();
-//			
-//		} catch (SQLException e) {
-//			log.error(e.getMessage(), e);
-//			throw new CouldNotDeleteGroup();
-//		}finally{
-//			connection.close();
-//		}
-//		deleteAllResourcesFromSingleGroup(groupId);
-//	}
+	@Override
+	public void deleteGroup(String groupId) throws SQLException {
+		Connection connection = getConnection();
+		try {
 
-//	private void deleteAllResourcesFromSingleGroup(String groupId) throws SQLException {
-//		Connection connection = getConnection();
-//		try {
-//
-//			
-//			PreparedStatement ps = connection
-//					.prepareStatement("DELETE FROM Resources WHERE Resources.groupId = ?");
-//			ps.setString(1, groupId);
-//			ps.execute();
-//			connection.commit();
-//			
-//		} catch (SQLException e) {
-//			log.error(e.getMessage(), e);
-//			throw new CouldNotDeleteGroup();
-//		}finally{
-//			connection.close();
-//		}
-//	}
+			
+			PreparedStatement ps = connection
+					.prepareStatement("DELETE FROM Groups WHERE Groups.groupId = ?");
+			ps.setString(1, groupId);
+			ps.execute();
+			connection.commit();
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new CouldNotDeleteGroup();
+		}finally{
+			connection.close();
+		}
+		deleteAllResourcesFromSingleGroup(groupId);
+	}
+
+	private void deleteAllResourcesFromSingleGroup(String groupId) throws SQLException {
+		Connection connection = getConnection();
+		try {
+
+			
+			PreparedStatement ps = connection
+					.prepareStatement("DELETE FROM Resources WHERE Resources.groupId = ?");
+			ps.setString(1, groupId);
+			ps.execute();
+			connection.commit();
+			
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new CouldNotDeleteGroup();
+		}finally{
+			connection.close();
+		}
+	}
 
 	
-//	@Override
-//	public void updateGroup(Group g3) throws SQLException {
-//		Group existent = null;
-//		try {
-//			existent = getGroup(g3.getGroupId());
-//		} catch (GroupNotFound e1) {
-//			return;
-//		}
-//		try {
-//			deleteGroup(g3.getGroupId());
-//		} catch (CouldNotDeleteGroup e) {
-//			return;
-//		}
-//		try {
-//			addGroup(g3);
-//		} catch (CouldNotCreateGroup e2) {
-//			addGroup(existent);
-//		}
-//	}
+	@Override
+	public void updateGroup(Group g3) throws SQLException {
+		Group existent = null;
+		try {
+			existent = getGroup(g3.getGroupId());
+		} catch (GroupNotFound e1) {
+			return;
+		}
+		try {
+			deleteGroup(g3.getGroupId());
+		} catch (CouldNotDeleteGroup e) {
+			return;
+		}
+		try {
+			addGroup(g3);
+		} catch (CouldNotCreateGroup e2) {
+			addGroup(existent);
+		}
+	}
 
-//	@Override
-//	public void deleteResourceFromGroup(String resourceId) throws SQLException {
-//
-//		Connection connection = getConnection();
-//		try {
-//
-//			PreparedStatement ps = connection
-//					.prepareStatement("DELETE FROM Resources WHERE Resources.resourceId = ?");
-//			ps.setString(1, resourceId);
-//			ps.execute();
-//			connection.commit();
-//		
-//		} catch (SQLException e) {
-//			log.error(e.getMessage(), e);
-//			throw new CouldNotDeleteGroup();
-//		}finally{
-//			connection.close();
-//		}
-//
-//	}
-	
+	@Override
+	public void deleteResourceFromGroup(String resourceId) throws SQLException {
+
+		Connection connection = getConnection();
+		try {
+
+			PreparedStatement ps = connection
+					.prepareStatement("DELETE FROM Resources WHERE Resources.resourceId = ?");
+			ps.setString(1, resourceId);
+			ps.execute();
+			connection.commit();
+		
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			throw new CouldNotDeleteGroup();
+		}finally{
+			connection.close();
+		}
+
+	}
+	**/
+
 	public static class CouldNotCreateGroup extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 	}
