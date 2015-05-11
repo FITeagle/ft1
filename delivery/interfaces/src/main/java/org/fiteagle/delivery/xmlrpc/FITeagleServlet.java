@@ -73,6 +73,7 @@ public class FITeagleServlet extends XmlRpcServlet {
         return certs[0];
     }else {
 		Enumeration<String> certString  = req.getHeaderNames();
+		
 		//FUSECO quickfix!!!
 		while(certString.hasMoreElements()){
 			String header = certString.nextElement();
