@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class OpenstackVMAdapterTest {
-//	
+	
 //	OpenstackVMAdapter openstackVMAdapter;
 //	OfflineTestClient offlineClient;
 //	@Before
@@ -15,7 +15,7 @@ public class OpenstackVMAdapterTest {
 //		openstackVMAdapter = new OpenstackVMAdapter();
 //		openstackVMAdapter.setClient(offlineClient);
 //	}
-//
+
 
 	@Before
 	public void setUp() {

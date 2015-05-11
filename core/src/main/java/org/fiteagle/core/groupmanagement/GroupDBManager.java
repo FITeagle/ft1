@@ -1,6 +1,5 @@
 package org.fiteagle.core.groupmanagement;
 
-import java.sql.SQLException;
 
 import org.fiteagle.core.config.FiteaglePreferences;
 import org.fiteagle.core.config.FiteaglePreferencesXML;
@@ -25,7 +24,7 @@ public class GroupDBManager {
   }
   private static final String DEFAULT_DATABASE_TYPE = databaseType.Persistent.name();
 
-  private GroupDBManager() throws SQLException{
+  private GroupDBManager() {
 	  
 	  Boolean inTestingMode = Boolean.valueOf(System.getProperty("org.fiteagle.core.userdatabase.UserDBManager.testing"));
 	  if(inTestingMode){
@@ -56,11 +55,7 @@ public class GroupDBManager {
   
   public static GroupDBManager getInstance()  {
     if(gm == null ){
-      try {
-        gm = new GroupDBManager();
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
+      gm = new GroupDBManager();      
     }
     return gm;
   }
