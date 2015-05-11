@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.security.cert.X509Certificate;
+import java.util.Enumeration;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -70,7 +71,15 @@ public class FITeagleServlet extends XmlRpcServlet {
     X509Certificate[] certs = (X509Certificate[]) req.getAttribute("javax.servlet.request.X509Certificate");
     if (null != certs && certs.length > 0) {
         return certs[0];
-    }
+    }else {
+		Enumeration<String> certString  = req.getHeaderNames();
+		//FUSECO quickfix!!!
+		while(certString.hasMoreElements()){
+			String header = certString.nextElement();
+			log.info("Header: "+ header + " Value: " + req.getHeader(header));
+		}
+	}
+
     throw new RuntimeException("No X.509 client certificate found in request");
   }
 
